@@ -22,6 +22,7 @@ import DenseTable from 'views/appoinments';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import axios from 'axios';
+import FullScreenLoading from './FullScreenLoading';
 // ==============================|| FORMS WIZARD - BASIC ||============================== //
 
 export default function BasicWizard() {
@@ -167,6 +168,7 @@ export default function BasicWizard() {
 
   return (
     <MainCard title="Appointment">
+      {loading && <FullScreenLoading />}
       <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
         {steps.map((label) => (
           <Step key={label}>
@@ -194,11 +196,11 @@ export default function BasicWizard() {
           </>
         ) : (
           <>
-            {loading &&
+            {/* {loading &&
               <Box sx={{ flex: 1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <CircularProgress />
               </Box>
-            }
+            } */}
             {getStepContent(activeStep)}
             <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
               {activeStep !== 0 && (
