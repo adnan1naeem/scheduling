@@ -46,7 +46,6 @@ export default function DenseTable({nextAvailableSlotData, availableSlotData, se
       }else{
         setAvailableSlot([...availableSlotData])
       }
-      console.log(JSON.stringify(providerData, null, 2), "providerDataproviderData");
     })();
   }, [])
 
