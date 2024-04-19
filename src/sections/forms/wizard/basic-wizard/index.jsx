@@ -156,6 +156,8 @@ export default function BasicWizard() {
       params: params
     };
 
+    console.log(JSON.stringify(config, null, 2), "configconfigconfig");
+
     try {
       const response = await axios.request(config);
       return response.data;
