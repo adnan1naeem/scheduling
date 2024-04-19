@@ -65,8 +65,6 @@ export default function BasicWizard() {
     setActiveStep(activeStep + 1);
   };
 
-  console.log(JSON.stringify(reason, null, 2));
-
   const handleConfirmAppointment = async () => {
     const params = {
       patientId: '470560',

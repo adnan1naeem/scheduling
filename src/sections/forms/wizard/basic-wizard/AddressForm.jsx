@@ -227,10 +227,10 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
 
   return (
     <>
-      <Typography
+      {/* <Typography
         onClick={() => clearFormFun()}
         variant="h6"
-        sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography>
+        sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography> */}
       <MainCard title="Book Appointment">
         <RadioGroupForms
           startDate={(data) => setStartDate(data)}
