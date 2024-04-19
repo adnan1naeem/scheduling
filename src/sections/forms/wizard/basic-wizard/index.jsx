@@ -111,15 +111,12 @@ export default function BasicWizard() {
 
   useEffect(() => {
     if (startDate && endDate) {
-      alert('date');
       getAvailableSlot();
     }
     if (locatonList?.length > 0) {
-      alert('location');
       getAvailableSlot();
     }
     if (providerList?.length > 0) {
-      alert('provider');
       getAvailableSlot();
     }
   }, [startDate, endDate, locatonList, providerList])
@@ -207,11 +204,12 @@ export default function BasicWizard() {
           </>
         ) : (
           <>
-            {loading ?
-              <Box sx={{ padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+            {loading &&
+              <Box sx={{flex:1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <CircularProgress />
-              </Box> :
-              <>{getStepContent(activeStep)}</>}
+              </Box>
+            }
+            {getStepContent(activeStep)}
             <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
               {activeStep !== 0 && (
                 <Button onClick={handleBack} sx={{ my: 3, ml: 1 }}>
