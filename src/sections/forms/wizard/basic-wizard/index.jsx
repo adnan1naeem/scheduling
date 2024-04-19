@@ -39,7 +39,7 @@ export default function BasicWizard() {
     switch (step) {
       case 0:
         return <AddressForm
-          handleNextFun={(next) => handleNext()}
+          clearForm={(next) => clearFormRecord()}
           startDateFun={(data) => setStartDate(data)}
           endDateFun={(data) => setEndDate(data)}
           setLocationListFun={(data) => setLocationList(data)}
@@ -55,49 +55,35 @@ export default function BasicWizard() {
     }
   }
 
+  const clearFormRecord = () => {
+    setLocationList([]);
+    setProviderList([]);
+    setReason([]);
+  }
+
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
 
-  // console.log(JSON.stringify(selectedRecord, null, 2));
-  // const fetchData = async (url, method, params) => {
-  //   let config = {
-  //     method: method,
-  //     maxBodyLength: Infinity,
-  //     url: `https://sbapi.epicpc.com/api/${url}`,
-  //     headers: {
-  //       Authorization:
-  //         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
-  //     },
-  //     params: params
-  //   };
+  console.log(JSON.stringify(reason, null, 2));
 
-  //   try {
-  //     const response = await axios.request(config);
-  //     return response.data;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-  // const handleConfirmAppointment = async () => {
-  //   // const params = {
-  //   //   "patientId": patientProfile.patientNumber,
-  //   //   "datetime": "$date ${event.time}",
-  //   //   "duration": event.duration,
-  //   //   "location": event.location,
-  //   //   "patient_name":
-  //   //     '${patientProfile.firstName} ${patientProfile.lastName}',
-  //   //   "practitioner": event.provider,
-  //   //   "reason_for_visit":
-  //   //     event.visitType.isEmpty ? 'ACT OV' : event.visitType.trim(),
-  //   //   "visitType":
-  //   //     event.visitType.isEmpty ? 'ACT OV' : event.visitType.trim(),
-  //   //   "self_schedule": 1
-  //   // };
-  //   // const providerData = await fetchData('appointments/save', 'get', params);
-  //   handleNext();
-  // };
+  const handleConfirmAppointment = async () => {
+    const params = {
+      patientId: '470560',
+      datetime: `${selectedRecord?.date} ${selectedRecord?.start}`,
+      duration: selectedRecord?.duration,
+      location: selectedRecord.location,
+      patient_name:
+        'Mohsin Naeem',
+      practitioner: selectedRecord.provider,
+      reason_for_visit: !reason ? 'ACT OV' : reason,
+      visitType: !reason ? 'ACT OV' : reason,
+      self_schedule: 1
+    };
+    const providerData = await fetchApiData('appointments/save', 'get', params);
+    alert(JSON.stringify(providerData, null,2));
+    handleNext();
+  };
 
   const [loading, setLoading] = React.useState(false);
   const [availableSlot, setAvailableSlot] = React.useState([]);
@@ -136,12 +122,12 @@ export default function BasicWizard() {
       params['sdate'] = moment(startDate).format("MM-DD-YYYY")
       params['edate'] = moment(endDate).format("MM-DD-YYYY")
     }
-    const providerData = await fetchAvailableSlot('appointments', 'get', params);
+    const providerData = await fetchApiData('appointments', 'get', params);
     setAvailableSlot([...providerData?.data]);
     setLoading(false);
   }
 
-  const fetchAvailableSlot = async (url, method, params) => {
+  const fetchApiData = async (url, method, params) => {
     let config = {
       method: method,
       maxBodyLength: Infinity,
@@ -205,7 +191,7 @@ export default function BasicWizard() {
         ) : (
           <>
             {loading &&
-              <Box sx={{flex:1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+              <Box sx={{ flex: 1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <CircularProgress />
               </Box>
             }

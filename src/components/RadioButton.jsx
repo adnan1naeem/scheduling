@@ -13,6 +13,7 @@ import moment from 'moment';
 
 export default function RadioGroupForms({ startDate, endDate }) {
   const [selecteDateRange, setSelecteDateRange] = useState(false);
+  const [radioSelected, setRadioSelected] = useState("today");
   const [value, setValue] = useState([
     null,
     null,
@@ -27,10 +28,12 @@ export default function RadioGroupForms({ startDate, endDate }) {
   }, [value])
 
   const handleRadioClick = () => {
+    setRadioSelected('dateRange');
     setSelecteDateRange(true)
   };
 
   const handleTodayClick = () => {
+    setRadioSelected('today');
     setValue([null, null]);
     setSelecteDateRange(false)
     startDate(today)
@@ -38,6 +41,7 @@ export default function RadioGroupForms({ startDate, endDate }) {
   };
 
   const handleTomorrowClick = () => {
+    setRadioSelected('tomorrow');
     setValue([null, null]);
     const tomorrow = today.add(1, 'days');
     setSelecteDateRange(false)
@@ -48,7 +52,7 @@ export default function RadioGroupForms({ startDate, endDate }) {
   return (
     <div>
       <MainCard title="Date">
-        <RadioGroup row aria-label="color">
+        <RadioGroup row aria-label="color" value={radioSelected}>
           <FormControlLabel onClick={() => handleTodayClick()} value="today" control={<Radio />} label="Today" />
           <FormControlLabel onClick={() => handleTomorrowClick()} value="tomorrow" control={<Radio />} label="Tomorrow" />
           <FormControlLabel

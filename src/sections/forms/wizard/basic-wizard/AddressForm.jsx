@@ -7,11 +7,31 @@ import RadioGroupForms from 'components/RadioButton';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
-import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
 // ==============================|| BASIC WIZARD - ADDRESS ||============================== //
-const reasonMap = [
+
+const fetchData = async (url, method, params) => {
+  let config = {
+    method: method,
+    maxBodyLength: Infinity,
+    url: `https://sbapi.epicpc.com/api/${url}`,
+    headers: {
+      Authorization:
+        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
+    },
+    params: params
+  };
+
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+let reasonStaticData = [
   {
     appointment_type_id: '155',
     abbreviation: 'ACT PHY',
@@ -39,28 +59,9 @@ const reasonMap = [
   }
 ];
 
-const fetchData = async (url, method, params) => {
-  let config = {
-    method: method,
-    maxBodyLength: Infinity,
-    url: `https://sbapi.epicpc.com/api/${url}`,
-    headers: {
-      Authorization:
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
-    },
-    params: params
-  };
-
-  try {
-    const response = await axios.request(config);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export default function AddressForm({ handleNextFun,startDateFun, endDateFun, setLocationListFun, setProviderListFun, setSelectedReasonFun }) {
+export default function AddressForm({ clearForm, startDateFun, endDateFun, setLocationListFun, setProviderListFun, setSelectedReasonFun }) {
   const [locatonList, setLocationList] = useState([]);
+  const [reasonMap, setReasonMap] = useState(reasonStaticData)
   const [selectedLocation, setSelectedLocation] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -71,27 +72,32 @@ export default function AddressForm({ handleNextFun,startDateFun, endDateFun, se
   const [SelectedReason, setSelectedReason] = useState()
 
   useEffect(() => {
-    const fetchDataAndSetState = async () => {
-      if (providerList.length > 0) {
-        const params = { provider: [selectedProvider] };
-        const locationData = await fetchData('location_provider', 'get', params);
-        const locationOptions = locationData?.data?.map((location) => ({
-          value: location.abbr,
-          label: location.desc
-        }));
-        setLocationList(locationOptions);
-        setReason(locationData?.app_typ);
-      } else {
-        const locationData = await fetchData('getlocation', 'get');
-        const locationOptions = locationData?.data?.map((location) => ({
-          value: location.abbr,
-          label: location.desc
-        }));
-        setLocationList(locationOptions);
-      }
-    };
     fetchDataAndSetState();
-  }, []);
+  }, [selectedProvider]);
+
+  const fetchDataAndSetState = async () => {
+    if (providerList.length > 0) {
+      const params = { provider: [selectedProvider] };
+      const locationData = await fetchData('location_provider', 'get', params);
+      const locationOptions = locationData?.data
+        ?.filter(location => location?.desc !== 'BLUE SKY')
+        .map(location => ({
+          value: location.abbr,
+          label: location.desc
+        }));
+      setLocationList(locationOptions);
+      setReason(locationData?.app_typ);
+    } else {
+      const locationData = await fetchData('getlocation', 'get');
+      const locationOptions = locationData?.data
+        ?.filter(location => location?.desc !== 'BLUE SKY')
+        .map(location => ({
+          value: location.abbr,
+          label: location.desc
+        }));
+      setLocationList(locationOptions);
+    }
+  };
 
   const reasons = reasonMap?.map((reason) => ({
     value: reason?.abbreviation,
@@ -173,21 +179,28 @@ export default function AddressForm({ handleNextFun,startDateFun, endDateFun, se
     const SelectedValue = reasonMap.find((option) => option.abbreviation === selectedOption);
     try {
       if (selectedLocation?.length <= 0 || selectedProvider?.length <= 0) {
-        const ReasonDataList = await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id });
-        setSelectedReasonData(ReasonDataList);
-        const Reason_Location_Data = selectedReasonData?.data?.map((value) => ({
-          value: value?.loc_abbr,
-          label: value?.loc_desc
-        }));
-        const Reason_Provider_Data = selectedReasonData?.data?.map((provider) => ({
-          value: provider?.pro_abbr,
-          label: provider?.pro_fname || provider?.pro_lname
-        }));
-        setProviderList(Reason_Provider_Data);
-        setLocationList(Reason_Location_Data);
-      }
-      else {
-        setSelectedReason(SelectedValue)
+        console.log(SelectedValue?.appointment_type_id, 'SelectedValue?.appointment_type_id');
+        await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id })
+          .then((res) => {
+            setSelectedReasonData(res);
+            const Reason_Location_Data = res?.data?.map((value) => ({
+              value: value?.loc_abbr,
+              label: value?.loc_desc
+            }));
+            const Reason_Provider_Data = res?.data?.map((provider) => ({
+              value: provider?.pro_abbr,
+              label: provider?.pro_fname || provider?.pro_lname
+            }));
+            console.log(JSON?.stringify(res, null, 2) + 'ReasonDataList');
+            console.log(JSON?.stringify(Reason_Provider_Data, null, 2) + 'Reason_Provider_Data');
+            setProviderList(Reason_Provider_Data);
+            setLocationList(Reason_Location_Data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        setSelectedReason(SelectedValue);
       }
     } catch (error) {
       console.error('Error fetching reason data:', error);
@@ -201,28 +214,44 @@ export default function AddressForm({ handleNextFun,startDateFun, endDateFun, se
     }
   }, [startDate, endDate])
 
+  useEffect(() => {
+    setReasonMap(reasonStaticData)
+  }, [])
+
+  const clearFormFun = () => {
+    // setLocationList(null);
+    // setProviderList(null);
+    // setReasonMap(null);
+    clearForm(true);
+  }
+
   return (
-    <MainCard title="Book Appointment">
-      <RadioGroupForms
-        startDate={(data) => setStartDate(data)}
-        endDate={(data) => setEndDate(data)}
-      />
-      <Grid sx={{ mt: '3%' }}>
-        <CustomSelect
-          name="Select Location"
-          options={locatonList}
-          title="Location"
-          value={selectedLocation}
-          onChange={handleLocationChange}
+    <>
+      <Typography
+        onClick={() => clearFormFun()}
+        variant="h6"
+        sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography>
+      <MainCard title="Book Appointment">
+        <RadioGroupForms
+          startDate={(data) => setStartDate(data)}
+          endDate={(data) => setEndDate(data)}
         />
-      </Grid>
-      <Grid sx={{ mt: '3%' }}>
-        <CustomSelect name="Select Provider" options={providerList} title="Provider" onChange={handleProviderChange} />
-      </Grid>
-      <Grid sx={{ mt: '3%' }}>
-        <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
-      </Grid>
-      {/* <Box spacing={30}
+        <Grid sx={{ mt: '3%' }}>
+          <CustomSelect
+            name="Select Location"
+            options={locatonList}
+            title="Location"
+            value={selectedLocation}
+            onChange={handleLocationChange}
+          />
+        </Grid>
+        <Grid sx={{ mt: '3%' }}>
+          <CustomSelect name="Select Provider" options={providerList} title="Provider" onChange={handleProviderChange} />
+        </Grid>
+        <Grid sx={{ mt: '3%' }}>
+          <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
+        </Grid>
+        {/* <Box spacing={30}
         sx={{ display: 'flex', flexWrap: "wrap" }}
         justifyContent={'center'}
         alignItems={'center'}>
@@ -240,6 +269,8 @@ export default function AddressForm({ handleNextFun,startDateFun, endDateFun, se
             </Button>
         </Grid>
       </Box> */}
-    </MainCard>
+      </MainCard>
+    </>
+
   );
 }
