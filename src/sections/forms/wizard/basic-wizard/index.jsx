@@ -6,12 +6,13 @@ import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import Stepper from '@mui/material/Stepper';
+import StepIcon from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import CircularProgress from '@mui/material/CircularProgress';
 import moment from "moment";
+import { useParams } from 'react-router-dom';
 
 // project imports
 import AddressForm from './AddressForm';
@@ -34,6 +35,16 @@ export default function BasicWizard() {
   const [locatonList, setLocationList] = useState([]);
   const [providerList, setProviderList] = useState([]);
   const [reason, setReason] = useState(null);
+  const { fullName, patientId } = useParams();
+  const [fullNameParam, setFullNameParam] = useState(fullName);
+  const [patientIdParam, setPatientIdParam] = useState(patientId);
+
+  useEffect(() => {
+    if (fullNameParam && patientIdParam) {
+      alert(fullNameParam);
+    }
+  }, [])
+
   // step options
   const steps = ['Search Schedule', 'Select Available Slot', 'Confirm Appointment'];
 
@@ -85,8 +96,7 @@ export default function BasicWizard() {
       visitType: !reason ? 'ACT OV' : reason,
       self_schedule: 1
     };
-    const providerData = await booAppiontment('appointments/save', 'get', params);
-    alert(JSON.stringify(providerData, null, 2));
+    const providerData = await booAppiontment('appointments/save', 'POST', params);
     console.log(JSON.stringify(providerData, null, 2), "providerDataproviderDataproviderData");
     handleNext();
   };
@@ -110,8 +120,10 @@ export default function BasicWizard() {
     }
     else if (providerList?.length > 0 || providerList == null) {
       getAvailableSlot();
+    } else if (reason?.length > 0 || reason == null) {
+      getAvailableSlot();
     }
-  }, [startDate, endDate, locatonList, providerList])
+  }, [startDate, endDate, locatonList, providerList, reason])
 
   const getAvailableSlot = async () => {
     setLoading(true);
@@ -134,21 +146,29 @@ export default function BasicWizard() {
   }
 
   const booAppiontment = async (url, method, params) => {
-    let config = {
-      method: method,
-      maxBodyLength: Infinity,
-      url: `https://hero.epicpc.com/api/${url}`,
-      headers: {
-        Authorization:
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
-      },
-      params: params
-    };
+    // let config = {
+    //   method: method,
+    //   url: `https://hero.epicpc.com/api/${url}`,
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //     Authorization:
+    //       'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
+    //   },
+    //   params: params
+    // };
 
-    console.log(JSON.stringify(config, null, 2), "configconfigconfig");
+    console.log(JSON.stringify(params, null, 2), "configconfigconfig");
 
     try {
-      const response = await axios.request(config);
+      const response = await axios.post(`https://hero.epicpc.com/api/appointments/save`,
+        null,
+        {params}
+      ).then(res => {
+        console.log(JSON.stringify(res, null,2), "resresresresres")
+      }).catch(err => {
+        console.log(JSON.stringify(err, null,2), "errerrerrerrerr")
+      })
       return response.data;
     } catch (error) {
       throw error;
@@ -167,7 +187,7 @@ export default function BasicWizard() {
       params: params
     };
 
-    console.log(JSON.stringify(config, null, 2), "configconfigconfig");
+    console.log(JSON.stringify(config, null, 2));
 
     try {
       const response = await axios.request(config);
@@ -193,9 +213,19 @@ export default function BasicWizard() {
     <MainCard title="Appointment">
       {loading && <FullScreenLoading />}
       <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-        {steps.map((label) => (
+        {steps?.map((label) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel StepIconProps={{
+              sx: {
+                "&.Mui-active": {
+                  color: "#292754"
+                },
+                "&.Mui-completed": {
+                  color: "#292754"
+                }
+              }
+            }}
+            >{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
@@ -227,7 +257,7 @@ export default function BasicWizard() {
             {getStepContent(activeStep)}
             <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
               {activeStep !== 0 && (
-                <Button onClick={handleBack} sx={{ my: 3, ml: 1 }}>
+                <Button onClick={handleBack} sx={{ my: 3, ml: 1, color: "#292754" }}>
                   Back
                 </Button>
               )}

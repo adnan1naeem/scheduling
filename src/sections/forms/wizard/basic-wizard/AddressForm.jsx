@@ -5,8 +5,8 @@ import CustomSelect from 'components/InputFieldDropDown';
 import MainCard from 'components/MainCard';
 import RadioGroupForms from 'components/RadioButton';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import Button from '@mui/material/Button';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
 // ==============================|| BASIC WIZARD - ADDRESS ||============================== //
 
@@ -83,9 +83,9 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
           value: location.abbr,
           label: location.desc
         }));
-        if(selectedLocation.length <= 0){
-          setLocationList(locationOptions);
-        }
+      if (selectedLocation.length <= 0) {
+        setLocationList(locationOptions);
+      }
       setReason(locationData?.app_typ);
     } else {
       const locationData = await fetchData('getlocation', 'get');
@@ -95,9 +95,9 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
           value: location.abbr,
           label: location.desc
         }));
-        if(selectedLocation.length <= 0){
-          setLocationList(locationOptions);
-        }
+      if (selectedLocation.length <= 0) {
+        setLocationList(locationOptions);
+      }
     }
   };
 
@@ -168,7 +168,7 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         }
       }
     };
-    if(selectedProvider?.length <= 0){
+    if (selectedProvider?.length <= 0) {
       fetchProvidersForLocation();
     }
   }, [selectedLocation]);
@@ -224,10 +224,22 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
 
   return (
     <>
-      <Typography
-        onClick={() => window.location.reload()}
-        variant="h6"
-        sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography>
+      <Button onClick={() => window.location.reload()} variant="contained" sx={{
+        zIndex: 1,
+        right: 0, paddingTop: '1%', position: 'absolute',
+        backgroundColor: '#292754', my: "1.5%", mr: 5,
+        '&:hover': {
+          backgroundColor: '#292754'
+        },
+        '&:active': {
+          backgroundColor: 'white',
+          '&::after': {
+            opacity: 0.1
+          }
+        }
+      }}>
+        {'Clear Form'}
+      </Button>
       <MainCard title="Book Appointment">
         <RadioGroupForms
           startDate={(data) => setStartDate(data)}
