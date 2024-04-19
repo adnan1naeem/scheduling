@@ -28,6 +28,7 @@ export default function BasicWizard() {
   const [activeStep, setActiveStep] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [nextAvailableSlotData, setNextAvailableSlotData] = useState(false);
   const [endDate, setEndDate] = useState(null);
   const [locatonList, setLocationList] = useState([]);
   const [providerList, setProviderList] = useState([]);
@@ -47,7 +48,7 @@ export default function BasicWizard() {
           setSelectedReasonFun={(data) => setReason(data)}
         />;
       case 1:
-        return <DenseTable availableSlot={availableSlot} selectedRecordFun={(data) => setSelectedRecord(data)} handleNextFun={(next) => handleNext()} />;
+        return <DenseTable nextAvailableSlotData={nextAvailableSlotData} availableSlotData={availableSlot} selectedRecordFun={(data) => setSelectedRecord(data)} handleNextFun={(next) => handleNext()} />;
       case 2:
         return <Review selectedRecord={selectedRecord} />;
       default:
@@ -65,6 +66,11 @@ export default function BasicWizard() {
     setActiveStep(activeStep + 1);
   };
 
+  const handleNextAvailableSlot = async () => {
+    setNextAvailableSlotData(true)
+    handleNext();
+  };
+
   const handleConfirmAppointment = async () => {
     const params = {
       patientId: '470560',
@@ -79,7 +85,7 @@ export default function BasicWizard() {
       self_schedule: 1
     };
     const providerData = await fetchApiData('appointments/save', 'get', params);
-    alert(JSON.stringify(providerData, null,2));
+    // alert(JSON.stringify(providerData, null, 2));
     handleNext();
   };
 
@@ -205,7 +211,7 @@ export default function BasicWizard() {
                 justifyContent={'center'}
                 alignItems={'center'}>
                 <Grid item sx={{ mt: '3%' }}>
-                  <Button variant="contained" sx={{ backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' } }}>
+                  <Button variant="contained" sx={{ backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' } }} onClick={handleNextAvailableSlot}>
                     Next Available Slot
                   </Button>
                 </Grid>
@@ -213,7 +219,10 @@ export default function BasicWizard() {
                   mr: { xs: 1, sm: 5 },
                 }}></Box>
                 <Grid item sx={{ mt: '3%' }}>
-                  <Button onClick={() => handleNext()} variant="contained" sx={{ backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' } }}>
+                  <Button onClick={() => {
+                    setNextAvailableSlotData(false)
+                    handleNext()
+                  }} variant="contained" sx={{ backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' } }}>
                     <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
                   </Button>
                 </Grid>
