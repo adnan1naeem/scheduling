@@ -4,11 +4,8 @@ import React from 'react';
 import CustomSelect from 'components/InputFieldDropDown';
 import MainCard from 'components/MainCard';
 import RadioGroupForms from 'components/RadioButton';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
-import Typography from '@mui/material/Typography';
-import NextLink from 'next/link';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
 // ==============================|| BASIC WIZARD - ADDRESS ||============================== //
 
@@ -73,11 +70,11 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
 
   useEffect(() => {
     fetchDataAndSetState();
-  }, [selectedProvider]);
+  }, []);
 
-  const fetchDataAndSetState = async () => {
-    if (providerList.length > 0) {
-      const params = { provider: [selectedProvider] };
+  const fetchDataAndSetState = async (item) => {
+    if (item?.length > 0) {
+      const params = { provider: item };
       const locationData = await fetchData('location_provider', 'get', params);
       const locationOptions = locationData?.data
         ?.filter(location => location?.desc !== 'BLUE SKY')
@@ -171,6 +168,7 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
   }, [selectedLocation]);
 
   const handleProviderChange = (selectedOption) => {
+    fetchDataAndSetState(selectedOption);
     setSelectedProvider(selectedOption);
   };
 
@@ -231,7 +229,7 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         onClick={() => clearFormFun()}
         variant="h6"
         sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography> */}
-      <MainCard title="Book Appointment">
+      <MainCard title="Book Appointment" style={{ backgroundColor: '#FBF9F0' }}>
         <RadioGroupForms
           startDate={(data) => setStartDate(data)}
           endDate={(data) => setEndDate(data)}
@@ -251,24 +249,6 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         <Grid sx={{ mt: '3%' }}>
           <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
         </Grid>
-        {/* <Box spacing={30}
-        sx={{ display: 'flex', flexWrap: "wrap" }}
-        justifyContent={'center'}
-        alignItems={'center'}>
-        <Grid item sx={{ mt: '3%' }}>
-          <Button variant="contained" sx={{backgroundColor:'#2470AC', width: { xs: '100%', lg: '100%' } }}>
-            Next Available Slot
-          </Button>
-        </Grid>
-        <Box sx={{
-          mr: { xs: 1, sm: 5 },
-        }}></Box>
-        <Grid item sx={{ mt: '3%' }}>
-            <Button onClick={()=>handleNextFun(true)} variant="contained" sx={{backgroundColor:'#0B8588', width: { xs: '100%', lg: '100%' } }}>
-              Available Slot
-            </Button>
-        </Grid>
-      </Box> */}
       </MainCard>
     </>
 

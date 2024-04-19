@@ -167,7 +167,7 @@ export default function BasicWizard() {
   };
 
   return (
-    <MainCard title="Appointment">
+    <MainCard title="Appointment" sx={{ backgroundColor: '#FBF9F0' }}>
       {loading && <FullScreenLoading />}
       <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
         {steps.map((label) => (
@@ -176,7 +176,7 @@ export default function BasicWizard() {
           </Step>
         ))}
       </Stepper>
-      <>
+      <div style={{ backgroundColor: '#FBF9F0' }}>
         {activeStep === steps.length ? (
           <>
             <Typography variant="h5" gutterBottom>
@@ -195,7 +195,7 @@ export default function BasicWizard() {
             </Stack>
           </>
         ) : (
-          <>
+          <div style={{ backgroundColor: '#FBF9F0' }}>
             {/* {loading &&
               <Box sx={{ flex: 1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <CircularProgress />
@@ -209,7 +209,7 @@ export default function BasicWizard() {
                 </Button>
               )}
               {activeStep == 0 && <Box spacing={30}
-                sx={{ display: 'flex', flexWrap: "wrap" }}
+                sx={{ display: 'flex', flexWrap: "wrap",  backgroundColor: '#FBF9F0' }}
                 justifyContent={'center'}
                 alignItems={'center'}>
                 <Grid item sx={{ mt: '3%' }}>
@@ -238,9 +238,9 @@ export default function BasicWizard() {
                 </AnimateButton>
               }
             </Stack>
-          </>
+          </div>
         )}
-      </>
+      </div>
     </MainCard>
   );
 }
