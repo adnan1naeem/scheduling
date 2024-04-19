@@ -168,7 +168,7 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         }
       }
     };
-    if (selectedProvider?.length <= 0) {
+    if (selectedProvider?.length <= 1) {
       fetchProvidersForLocation();
     }
   }, [selectedLocation]);
