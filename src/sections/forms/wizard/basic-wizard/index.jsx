@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import moment from "moment";
 
 // project imports
 import AddressForm from './AddressForm';
@@ -94,22 +95,54 @@ export default function BasicWizard() {
   //   //     event.visitType.isEmpty ? 'ACT OV' : event.visitType.trim(),
   //   //   "self_schedule": 1
   //   // };
-  //   // const providerData = await fetchData('save', 'get', params);
+  //   // const providerData = await fetchData('appointments/save', 'get', params);
   //   handleNext();
   // };
 
   const [loading, setLoading] = React.useState(false);
   const [availableSlot, setAvailableSlot] = React.useState([]);
-
+  let count = false;
   React.useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const params = {};
-      const providerData = await fetchAvailableSlot('nextAvailableApp', 'get', params);
-      setAvailableSlot([...providerData?.data]);
-      setLoading(false);
-    })();
+    if (!count) {
+      count = true
+      getAvailableSlot();
+    }
   }, [])
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      alert('date');
+      getAvailableSlot();
+    }
+    if (locatonList?.length > 0) {
+      alert('location');
+      getAvailableSlot();
+    }
+    if (providerList?.length > 0) {
+      alert('provider');
+      getAvailableSlot();
+    }
+  }, [startDate, endDate, locatonList, providerList])
+
+  const getAvailableSlot = async () => {
+    setLoading(true);
+    let params = {};
+    if (locatonList?.length > 0) {
+      params['location'] = locatonList
+    }
+    if (providerList?.length > 0) {
+      params['provider'] = providerList
+    } if (!startDate) {
+      params['sdate'] = moment(new Date()).format("MM-DD-YYYY")
+      params['edate'] = moment(new Date()).format("MM-DD-YYYY")
+    } else {
+      params['sdate'] = moment(startDate).format("MM-DD-YYYY")
+      params['edate'] = moment(endDate).format("MM-DD-YYYY")
+    }
+    const providerData = await fetchAvailableSlot('appointments', 'get', params);
+    setAvailableSlot([...providerData?.data]);
+    setLoading(false);
+  }
 
   const fetchAvailableSlot = async (url, method, params) => {
     let config = {
