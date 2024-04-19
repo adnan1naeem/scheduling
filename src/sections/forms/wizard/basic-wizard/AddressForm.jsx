@@ -5,6 +5,7 @@ import CustomSelect from 'components/InputFieldDropDown';
 import MainCard from 'components/MainCard';
 import RadioGroupForms from 'components/RadioButton';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
 // ==============================|| BASIC WIZARD - ADDRESS ||============================== //
@@ -221,19 +222,12 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
     setReasonMap(reasonStaticData)
   }, [])
 
-  const clearFormFun = () => {
-    // setLocationList(null);
-    // setProviderList(null);
-    // setReasonMap(null);
-    clearForm(true);
-  }
-
   return (
     <>
-      {/* <Typography
-        onClick={() => clearFormFun()}
+      <Typography
+        onClick={() => window.location.reload()}
         variant="h6"
-        sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography> */}
+        sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography>
       <MainCard title="Book Appointment">
         <RadioGroupForms
           startDate={(data) => setStartDate(data)}
