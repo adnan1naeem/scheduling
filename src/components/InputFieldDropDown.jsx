@@ -36,27 +36,27 @@ const CustomSelect = ({ name, options, title, onChange }) => {
 
   return (
     <MainCard title={title}>
-        <FormControl fullWidth>
+      <FormControl fullWidth>
         <InputLabel id={`select-${name}-label`}>{name}</InputLabel>
-          <Select
-            labelId={`select-${name}-label`}
-            id={`select-${name}`}
-            multiple
-            value={selectedValues}
-            onChange={handleChange}
-            input={<OutlinedInput label="Tag" />}
-            renderValue={(selected) => selected.join(', ')}
-            MenuProps={MenuProps}
-          >
-            {(options === undefined || options?.length <= 0) ? <Box sx={{ ml: 2 }}><ListItemText primary={"No record found!"} /></Box> : null}
-            {options?.map((name) => (
-              <MenuItem key={name} value={name?.value}>
-                <Checkbox checked={selectedValues.indexOf(name?.value) > -1} />
-                <ListItemText primary={name?.label} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Select
+          labelId={`select-${name}-label`}
+          id={`select-${name}`}
+          multiple
+          value={selectedValues}
+          onChange={handleChange}
+          input={<OutlinedInput label="Tag" />}
+          renderValue={(selected) => selected?.map((value) => options?.find((option) => option?.value === value)?.label).join(', ')}
+          MenuProps={MenuProps}
+        >
+          {(options === undefined || options?.length <= 0) ? <Box sx={{ ml: 2 }}><ListItemText primary={"No record found!"} /></Box> : null}
+          {options?.map((name) => (
+            <MenuItem key={name} value={name?.value}>
+              <Checkbox checked={selectedValues.indexOf(name?.value) > -1} />
+              <ListItemText primary={name?.label} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </MainCard>
   );
 };

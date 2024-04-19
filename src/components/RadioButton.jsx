@@ -31,12 +31,14 @@ export default function RadioGroupForms({ startDate, endDate }) {
   };
 
   const handleTodayClick = () => {
+    setValue([null, null]);
     setSelecteDateRange(false)
     startDate(today)
     endDate(today)
   };
 
   const handleTomorrowClick = () => {
+    setValue([null, null]);
     const tomorrow = today.add(1, 'days');
     setSelecteDateRange(false)
     startDate(tomorrow)
@@ -55,7 +57,7 @@ export default function RadioGroupForms({ startDate, endDate }) {
             label={
               value[0] && value[1] ?
                 <div>
-                  {`Date Range: ${moment(value[0]).format("MM/DD/YYYY")} to ${moment(value[1]).format("MM/DD/YYYY")}`}
+                  {`Date Range: ${value[0].format("MM-DD-YYYY")} to ${value[1].format("MM-DD-YYYY")}`}
                 </div> :
                 <div>
                   {`Date Range`}

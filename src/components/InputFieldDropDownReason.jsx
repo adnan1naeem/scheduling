@@ -27,11 +27,11 @@ const CustomSelectReason = ({ name, options, title, onChange }) => {
           onChange={handleChange}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              <Chip key={selected} label={selected} />
+              <Chip key={selected} label={options?.find((option) => option?.value === selected)?.label} />
             </Box>
           )}
         >
-          {options.map((option) => (
+          {options?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
