@@ -85,8 +85,9 @@ export default function BasicWizard() {
       visitType: !reason ? 'ACT OV' : reason,
       self_schedule: 1
     };
-    const providerData = await fetchApiData('appointments/save', 'get', params);
-    // alert(JSON.stringify(providerData, null, 2));
+    const providerData = await booAppiontment('appointments/save', 'get', params);
+    alert(JSON.stringify(providerData, null, 2));
+    console.log(JSON.stringify(providerData, null, 2), "providerDataproviderDataproviderData");
     handleNext();
   };
 
@@ -132,6 +133,28 @@ export default function BasicWizard() {
     setLoading(false);
   }
 
+  const booAppiontment = async (url, method, params) => {
+    let config = {
+      method: method,
+      maxBodyLength: Infinity,
+      url: `https://hero.epicpc.com/api/${url}`,
+      headers: {
+        Authorization:
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
+      },
+      params: params
+    };
+
+    console.log(JSON.stringify(config, null, 2), "configconfigconfig");
+
+    try {
+      const response = await axios.request(config);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const fetchApiData = async (url, method, params) => {
     let config = {
       method: method,
@@ -167,7 +190,7 @@ export default function BasicWizard() {
   };
 
   return (
-    <MainCard title="Appointment" sx={{ backgroundColor: '#FBF9F0' }}>
+    <MainCard title="Appointment">
       {loading && <FullScreenLoading />}
       <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
         {steps.map((label) => (
@@ -176,7 +199,7 @@ export default function BasicWizard() {
           </Step>
         ))}
       </Stepper>
-      <div style={{ backgroundColor: '#FBF9F0' }}>
+      <>
         {activeStep === steps.length ? (
           <>
             <Typography variant="h5" gutterBottom>
@@ -195,7 +218,7 @@ export default function BasicWizard() {
             </Stack>
           </>
         ) : (
-          <div style={{ backgroundColor: '#FBF9F0' }}>
+          <>
             {/* {loading &&
               <Box sx={{ flex: 1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <CircularProgress />
@@ -209,11 +232,22 @@ export default function BasicWizard() {
                 </Button>
               )}
               {activeStep == 0 && <Box spacing={30}
-                sx={{ display: 'flex', flexWrap: "wrap", backgroundColor: '#FBF9F0' }}
+                sx={{ display: 'flex', flexWrap: "wrap" }}
                 justifyContent={'center'}
                 alignItems={'center'}>
                 <Grid item sx={{ mt: '3%' }}>
-                  <Button variant="contained" sx={{ backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' } }} onClick={handleNextAvailableSlot}>
+                  <Button variant="contained" sx={{
+                    backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' },
+                    '&:hover': {
+                      backgroundColor: '#2470AC'
+                    },
+                    '&:active': {
+                      backgroundColor: 'white',
+                      '&::after': {
+                        opacity: 0.1
+                      }
+                    }
+                  }} onClick={handleNextAvailableSlot}>
                     Next Available Slot
                   </Button>
                 </Grid>
@@ -224,7 +258,18 @@ export default function BasicWizard() {
                   <Button onClick={() => {
                     setNextAvailableSlotData(false)
                     handleNext()
-                  }} variant="contained" sx={{ backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' } }}>
+                  }} variant="contained" sx={{
+                    backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' },
+                    '&:hover': {
+                      backgroundColor: '#0B8588'
+                    },
+                    '&:active': {
+                      backgroundColor: 'white',
+                      '&::after': {
+                        opacity: 0.1
+                      }
+                    }
+                  }}>
                     <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
                   </Button>
                 </Grid>
@@ -232,15 +277,26 @@ export default function BasicWizard() {
               {activeStep == 1 && null}
               {activeStep == 2 &&
                 <AnimateButton>
-                  <LoadingButton disabled={getAppointmentUpdate()} variant="contained" onClick={handleConfirmAppointment} sx={{ backgroundColor: '#FFDF01', my: 3, ml: 1 }}>
+                  <LoadingButton disabled={getAppointmentUpdate()} variant="contained" onClick={handleConfirmAppointment} sx={{
+                    backgroundColor: '#0B8588', my: 3, ml: 1,
+                    '&:hover': {
+                      backgroundColor: '#0B8588'
+                    },
+                    '&:active': {
+                      backgroundColor: 'white',
+                      '&::after': {
+                        opacity: 0.1
+                      }
+                    }
+                  }}>
                     Confirm Appointment
                   </LoadingButton>
                 </AnimateButton>
               }
             </Stack>
-          </div>
+          </>
         )}
-      </div>
+      </>
     </MainCard>
   );
 }

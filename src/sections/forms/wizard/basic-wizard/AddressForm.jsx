@@ -82,7 +82,9 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
           value: location.abbr,
           label: location.desc
         }));
-      setLocationList(locationOptions);
+        if(selectedLocation.length <= 0){
+          setLocationList(locationOptions);
+        }
       setReason(locationData?.app_typ);
     } else {
       const locationData = await fetchData('getlocation', 'get');
@@ -92,7 +94,9 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
           value: location.abbr,
           label: location.desc
         }));
-      setLocationList(locationOptions);
+        if(selectedLocation.length <= 0){
+          setLocationList(locationOptions);
+        }
     }
   };
 
@@ -230,7 +234,7 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         onClick={() => clearFormFun()}
         variant="h6"
         sx={{ zIndex: 1, width: "20%", right: 0, paddingTop: '2%', position: 'absolute', color: '#0E98BA', }}>Clear Form</Typography> */}
-      <MainCard title="Book Appointment" style={{ backgroundColor: '#FBF9F0' }}>
+      <MainCard title="Book Appointment">
         <RadioGroupForms
           startDate={(data) => setStartDate(data)}
           endDate={(data) => setEndDate(data)}

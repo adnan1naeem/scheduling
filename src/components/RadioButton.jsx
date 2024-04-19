@@ -75,8 +75,8 @@ export default function RadioGroupForms({ startDate, endDate }) {
 
       {selecteDateRange &&
         <>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoItem label="Select Range">
+          <LocalizationProvider dateAdapter={AdapterDayjs} sx={{ backgroundColor: '#292754' }}>
+            <DemoItem label="Select Range" sx={{ pl: 2, color: '#292754', backgroundColor: 'white' }}>
               <DateRangeCalendar
                 value={value}
                 onChange={(newValue) => setValue(newValue)}

@@ -25,26 +25,18 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9)
 ];
 
-// export default function DenseTable({ availableSlot, selectedRecordFun, handleNextFun }) {
-//   const handleNext = (row) => {
-//     selectedRecordFun(row);
-//     handleNextFun(true)
-//   }
-
-export default function DenseTable({nextAvailableSlotData, availableSlotData, selectedRecordFun, handleNextFun }) {
+export default function DenseTable({ nextAvailableSlotData, availableSlotData, selectedRecordFun, handleNextFun }) {
   const [loading, setLoading] = React.useState(false);
-  const [availableSlot, setAvailableSlot] = React.useState([]);
+  const [availableSlot, setAvailableSlot] = React.useState([...availableSlotData]);
 
   React.useEffect(() => {
     (async () => {
-      if(nextAvailableSlotData){
+      if (nextAvailableSlotData) {
         setLoading(true);
         const params = {};
         const providerData = await fetchData('nextAvailableApp', 'get', params);
         setAvailableSlot([...providerData?.data]);
         setLoading(false);
-      }else{
-        setAvailableSlot([...availableSlotData])
       }
     })();
   }, [])
@@ -78,9 +70,9 @@ export default function DenseTable({nextAvailableSlotData, availableSlotData, se
     <MainCard content={false} title="Available Slot" >
       {loading ?
         <Box sx={{ padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-          <CircularProgress />
+          <CircularProgress sx={{ color: '#292754' }} />
         </Box> :
-        <TableContainer>
+        <TableContainer sx={{ maxHeight: 500, overflowY: 'auto' }}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
@@ -100,7 +92,18 @@ export default function DenseTable({nextAvailableSlotData, availableSlotData, se
                   <TableCell>{row?.provider_name}</TableCell>
                   <TableCell>{row?.date}</TableCell>
                   <TableCell>{row?.start}</TableCell>
-                  <Button onClick={() => handleNext(row)} variant="contained" sx={{ backgroundColor: '#FFDF01', my: 3, ml: 1 }}>
+                  <Button onClick={() => handleNext(row)} variant="contained" sx={{
+                    backgroundColor: '#292754', my: 3, ml: 1, mr: 1,
+                    '&:hover': {
+                      backgroundColor: '#292754'
+                    },
+                    '&:active': {
+                      backgroundColor: 'white',
+                      '&::after': {
+                        opacity: 0.1
+                      }
+                    }
+                  }}>
                     {'confirm'}
                   </Button>
                 </TableRow>
