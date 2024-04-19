@@ -17,7 +17,7 @@ const samplePage = {
   id: 'sample-page',
   title: <FormattedMessage id="sample-page" />,
   type: 'group',
-  url: '/sample-page',
+  url: '/forms/wizard',
   icon: icons.ChromeOutlined
 };
 

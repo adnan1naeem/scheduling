@@ -9,8 +9,8 @@ export const linkedInColor = '#0e76a8';
 
 export const APP_DEFAULT_PATH = '/sample-page';
 export const HORIZONTAL_MAX_ITEM = 7;
-export const DRAWER_WIDTH = 260;
-export const MINI_DRAWER_WIDTH = 60;
+export const DRAWER_WIDTH = 0;
+export const MINI_DRAWER_WIDTH = 0;
 
 const publicSans = Public_Sans({ subsets: ['latin'], weight: ['400', '500', '300', '700'] });
 
