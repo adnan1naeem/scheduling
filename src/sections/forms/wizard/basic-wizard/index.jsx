@@ -104,10 +104,10 @@ export default function BasicWizard() {
     if (startDate && endDate) {
       getAvailableSlot();
     }
-    if (locatonList?.length > 0) {
+    else if (locatonList?.length > 0 || locatonList == null) {
       getAvailableSlot();
     }
-    if (providerList?.length > 0) {
+    else if (providerList?.length > 0 || providerList == null) {
       getAvailableSlot();
     }
   }, [startDate, endDate, locatonList, providerList])
@@ -209,7 +209,7 @@ export default function BasicWizard() {
                 </Button>
               )}
               {activeStep == 0 && <Box spacing={30}
-                sx={{ display: 'flex', flexWrap: "wrap",  backgroundColor: '#FBF9F0' }}
+                sx={{ display: 'flex', flexWrap: "wrap", backgroundColor: '#FBF9F0' }}
                 justifyContent={'center'}
                 alignItems={'center'}>
                 <Grid item sx={{ mt: '3%' }}>

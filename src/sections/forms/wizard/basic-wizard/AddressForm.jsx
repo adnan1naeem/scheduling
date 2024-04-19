@@ -163,8 +163,9 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         }
       }
     };
-
-    fetchProvidersForLocation();
+    if(selectedProvider?.length <= 0){
+      fetchProvidersForLocation();
+    }
   }, [selectedLocation]);
 
   const handleProviderChange = (selectedOption) => {
@@ -176,7 +177,7 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
     setSelectedReasonFun(selectedOption);
     const SelectedValue = reasonMap.find((option) => option.abbreviation === selectedOption);
     try {
-      if (selectedLocation?.length <= 0 || selectedProvider?.length <= 0) {
+      if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
         console.log(SelectedValue?.appointment_type_id, 'SelectedValue?.appointment_type_id');
         await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id })
           .then((res) => {
