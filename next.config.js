@@ -29,5 +29,19 @@ module.exports = {
     NEXTAUTH_SECRET_KEY: process.env.NEXTAUTH_SECRET_KEY,
     NEXT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     NEXT_APP_MAPBOX_ACCESS_TOKEN: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
+  },
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.mdx/,
+      use: [
+        options.defaultLoaders.babel,
+        {
+          loader: '@mdx-js/loader',
+          options: options
+        }
+      ]
+    });
+
+    return config;
   }
 };
