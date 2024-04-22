@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import moment from "moment";
 import { useParams } from 'react-router-dom';
+import Image from 'next/legacy/image';
+import logoImage from '/public/assets/images/contact/image.png';
 
 // project imports
 import AddressForm from './AddressForm';
@@ -163,7 +165,7 @@ export default function BasicWizard() {
     try {
       const response = await axios.post(`https://hero.epicpc.com/api/appointments/save`,
         null,
-        {params}
+        { params }
       );
       return response?.data;
     } catch (error) {
@@ -206,123 +208,141 @@ export default function BasicWizard() {
   };
 
   return (
-    <MainCard title="Appointment">
-      {loading && <FullScreenLoading />}
-      <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-        {steps?.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconProps={{
-              sx: {
-                "&.Mui-active": {
-                  color: "#292754"
-                },
-                "&.Mui-completed": {
-                  color: "#292754"
+    <>
+      <div style={{
+        display: 'flex',
+        justifyContent:'center'
+
+      }}>
+
+
+        <Image
+          src={logoImage}
+          width={320}
+          height={200}
+
+        />
+      </div>
+
+      <MainCard title="Appointment">
+        {loading && <FullScreenLoading />}
+        <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+          {steps?.map((label) => (
+            <Step key={label}>
+              <StepLabel StepIconProps={{
+                sx: {
+                  "&.Mui-active": {
+                    color: "#292754"
+                  },
+                  "&.Mui-completed": {
+                    color: "#292754"
+                  }
                 }
-              }
-            }}
-            >{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      <>
-        {activeStep === steps.length ? (
-          <>
-            <Typography variant="h5" gutterBottom>
-              Thank you for your Appointment.
-            </Typography>
-            <Typography variant="subtitle1">
-              We have emailed your Appointment confirmation, and will send you an update when your Appointment status has
-              been changed.
-            </Typography>
-            <Stack direction="row" justifyContent="flex-end">
-              <AnimateButton>
-                <Button variant="contained" color="error" onClick={() => setActiveStep(0)} sx={{ my: 3, ml: 1 }}>
-                  Reset
-                </Button>
-              </AnimateButton>
-            </Stack>
-          </>
-        ) : (
-          <>
-            {/* {loading &&
+              }}
+              >{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <>
+          {activeStep === steps.length ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Thank you for your Appointment.
+              </Typography>
+              <Typography variant="subtitle1">
+                We have emailed your Appointment confirmation, and will send you an update when your Appointment status has
+                been changed.
+              </Typography>
+              <Stack direction="row" justifyContent="flex-end">
+                <AnimateButton>
+                  <Button variant="contained" color="error" onClick={() => setActiveStep(0)} sx={{ my: 3, ml: 1 }}>
+                    Reset
+                  </Button>
+                </AnimateButton>
+              </Stack>
+            </>
+          ) : (
+            <>
+              {/* {loading &&
               <Box sx={{ flex: 1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <CircularProgress />
               </Box>
             } */}
-            {getStepContent(activeStep)}
-            <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
-              {activeStep !== 0 && (
-                <Button onClick={handleBack} sx={{ my: 3, ml: 1, color: "#292754" }}>
-                  Back
-                </Button>
-              )}
-              {activeStep == 0 && <Box spacing={30}
-                sx={{ display: 'flex', flexWrap: "wrap" }}
-                justifyContent={'center'}
-                alignItems={'center'}>
-                <Grid item sx={{ mt: '3%' }}>
-                  <Button variant="contained" sx={{
-                    backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' },
-                    '&:hover': {
-                      backgroundColor: '#2470AC'
-                    },
-                    '&:active': {
-                      backgroundColor: 'white',
-                      '&::after': {
-                        opacity: 0.1
-                      }
-                    }
-                  }} onClick={handleNextAvailableSlot}>
-                    Next Available Slot
+              {getStepContent(activeStep)}
+              <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
+                {activeStep !== 0 && (
+                  <Button onClick={handleBack} sx={{ my: 3, ml: 1, color: "#292754" }}>
+                    Back
                   </Button>
-                </Grid>
-                <Box sx={{
-                  mr: { xs: 1, sm: 5 },
-                }}></Box>
-                <Grid item sx={{ mt: '3%' }}>
-                  <Button onClick={() => {
-                    setNextAvailableSlotData(false)
-                    handleNext()
-                  }} variant="contained" sx={{
-                    backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' },
-                    '&:hover': {
-                      backgroundColor: '#0B8588'
-                    },
-                    '&:active': {
-                      backgroundColor: 'white',
-                      '&::after': {
-                        opacity: 0.1
+                )}
+                {activeStep == 0 && <Box spacing={30}
+                  sx={{ display: 'flex', flexWrap: "wrap" }}
+                  justifyContent={'center'}
+                  alignItems={'center'}>
+                  <Grid item sx={{ mt: '3%' }}>
+                    <Button variant="contained" sx={{
+                      backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' },
+                      '&:hover': {
+                        backgroundColor: '#2470AC'
+                      },
+                      '&:active': {
+                        backgroundColor: 'white',
+                        '&::after': {
+                          opacity: 0.1
+                        }
                       }
-                    }
-                  }}>
-                    <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
-                  </Button>
-                </Grid>
-              </Box>}
-              {activeStep == 1 && null}
-              {activeStep == 2 &&
-                <AnimateButton>
-                  <LoadingButton disabled={getAppointmentUpdate()} variant="contained" onClick={handleConfirmAppointment} sx={{
-                    backgroundColor: '#0B8588', my: 3, ml: 1,
-                    '&:hover': {
-                      backgroundColor: '#0B8588'
-                    },
-                    '&:active': {
-                      backgroundColor: 'white',
-                      '&::after': {
-                        opacity: 0.1
+                    }} onClick={handleNextAvailableSlot}>
+                      Next Available Slot
+                    </Button>
+                  </Grid>
+                  <Box sx={{
+                    mr: { xs: 1, sm: 5 },
+                  }}></Box>
+                  <Grid item sx={{ mt: '3%' }}>
+                    <Button onClick={() => {
+                      setNextAvailableSlotData(false)
+                      handleNext()
+                    }} variant="contained" sx={{
+                      backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' },
+                      '&:hover': {
+                        backgroundColor: '#0B8588'
+                      },
+                      '&:active': {
+                        backgroundColor: 'white',
+                        '&::after': {
+                          opacity: 0.1
+                        }
                       }
-                    }
-                  }}>
-                    Confirm Appointment
-                  </LoadingButton>
-                </AnimateButton>
-              }
-            </Stack>
-          </>
-        )}
-      </>
-    </MainCard>
+                    }}>
+                      <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
+                    </Button>
+                  </Grid>
+                </Box>}
+                {activeStep == 1 && null}
+                {activeStep == 2 &&
+                  <AnimateButton>
+                    <LoadingButton disabled={getAppointmentUpdate()} variant="contained" onClick={handleConfirmAppointment} sx={{
+                      backgroundColor: '#0B8588', my: 3, ml: 1,
+                      '&:hover': {
+                        backgroundColor: '#0B8588'
+                      },
+                      '&:active': {
+                        backgroundColor: 'white',
+                        '&::after': {
+                          opacity: 0.1
+                        }
+                      }
+                    }}>
+                      Confirm Appointment
+                    </LoadingButton>
+                  </AnimateButton>
+                }
+              </Stack>
+            </>
+          )}
+        </>
+      </MainCard>
+    </>
+
   );
 }

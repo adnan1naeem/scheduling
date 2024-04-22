@@ -43,7 +43,7 @@ export default function Header() {
   // common header
   const mainHeader = (
     <Toolbar>
-      {/* <Image src={logoImage} width={120} height={120} /> */}
+      <Image src={logoImage} width={120} height={120} />
     </Toolbar>
   );
 
