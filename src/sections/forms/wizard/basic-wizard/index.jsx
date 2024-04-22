@@ -164,12 +164,8 @@ export default function BasicWizard() {
       const response = await axios.post(`https://hero.epicpc.com/api/appointments/save`,
         null,
         {params}
-      ).then(res => {
-        console.log(JSON.stringify(res, null,2), "resresresresres")
-      }).catch(err => {
-        console.log(JSON.stringify(err, null,2), "errerrerrerrerr")
-      })
-      return response.data;
+      );
+      return response?.data;
     } catch (error) {
       throw error;
     }
