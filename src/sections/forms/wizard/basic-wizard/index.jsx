@@ -211,15 +211,16 @@ export default function BasicWizard() {
     <>
       <div style={{
         display: 'flex',
-        justifyContent:'center'
+        justifyContent:'center',
+        marginBottom:'4%'
 
       }}>
 
 
         <Image
           src={logoImage}
-          width={320}
-          height={200}
+          width={250}
+          height={140}
 
         />
       </div>
