@@ -17,8 +17,9 @@ const CustomSelectReason = ({ name, options, title, onChange }) => {
   };
 
   return (
-    <MainCard title={title}>
-      <FormControl fullWidth>
+    <div>
+      <InputLabel id={`title`}>{title}</InputLabel>
+      <FormControl sx={{mt:'1%'}} fullWidth>
         <InputLabel id={`select-${name}-label`}>{name}</InputLabel>
         <Select
           labelId={`select-${name}-label`}
@@ -38,7 +39,7 @@ const CustomSelectReason = ({ name, options, title, onChange }) => {
           ))}
         </Select>
       </FormControl>
-    </MainCard>
+    </div>
   );
 };
 

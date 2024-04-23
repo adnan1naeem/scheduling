@@ -5,7 +5,7 @@ import BasicWizard from 'sections/forms/wizard/basic-wizard';
 
 export default function SamplePage() {
   return (
-    <Grid sx={{mt: "1%"}} container spacing={2.5} justifyContent="center">
+    <Grid sx={{mt: -"5%"}} container spacing={2.5} justifyContent="center">
       <Grid item xs={12} md={6} lg={7}>
         <BasicWizard />
       </Grid>

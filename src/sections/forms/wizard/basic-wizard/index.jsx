@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Step from '@mui/material/Step';
 import Stepper from '@mui/material/Stepper';
-import StepIcon from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -32,7 +31,11 @@ export default function BasicWizard() {
   const [activeStep, setActiveStep] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [bookAppintment, setBookAppintment] = useState(false);
-
+  const [radioSelected, setRadioSelected] = useState("today");
+  const [value, setValue] = useState([
+    null,
+    null,
+  ]);
   const [loading, setLoading] = React.useState(false);
   const [availableSlot, setAvailableSlot] = React.useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -58,6 +61,10 @@ export default function BasicWizard() {
     switch (step) {
       case 0:
         return <AddressForm
+          setValue={(value) => setValue(value)}
+          value={value}
+          setRadioSelected={(value) => setRadioSelected(value)}
+          radioSelected={radioSelected}
           clearForm={(next) => clearFormRecord()}
           startDateFun={(data) => setStartDate(data)}
           endDateFun={(data) => setEndDate(data)}
@@ -66,9 +73,16 @@ export default function BasicWizard() {
           setSelectedReasonFun={(data) => setReason(data)}
         />;
       case 1:
-        return <DenseTable nextAvailableSlotData={nextAvailableSlotData} availableSlotData={availableSlot} selectedRecordFun={(data) => setSelectedRecord(data)} handleNextFun={(next) => handleNext()} />;
+        return <DenseTable
+          locatonList={locatonList}
+          providerList={providerList}
+          nextAvailableSlotData={nextAvailableSlotData}
+          availableSlotData={availableSlot}
+          selectedRecordFun={(data) => setSelectedRecord(data)}
+          handleNextFun={(next) => handleNext()}
+        />;
       case 2:
-        return <Review selectedRecord={selectedRecord} />;
+        return <Review patientId={patientIdParam} fullName={fullNameParam} selectedRecord={selectedRecord} />;
       default:
         throw new Error('Unknown step');
     }
@@ -206,21 +220,24 @@ export default function BasicWizard() {
 
   return (
     <>
-      <div style={{
+      <Box sx={{
         display: 'flex',
-        justifyContent: 'center',
-        marginBottom: '4%'
-
+        position: 'absolute',
+        zIndex: 1,
+        left: 0,
+        marginBottom: '3%',
+        "@media screen and (min-width: 30px) and (max-width: 1023px)": {
+          position: 'relative',
+        },
       }}>
-
 
         <Image
           src={logoImage}
-          width={250}
-          height={140}
+          width={150}
+          height={80}
 
         />
-      </div>
+      </Box>
 
       <MainCard title="Appointment">
         {loading && <FullScreenLoading />}

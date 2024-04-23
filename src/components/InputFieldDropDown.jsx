@@ -3,7 +3,6 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import MainCard from './MainCard';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,13 +10,14 @@ import ListItemText from '@mui/material/ListItemText';
 
 const CustomSelect = ({ name, options, title, onChange }) => {
   const [selectedValues, setSelectedValues] = useState([]);
+  const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
+    setOpen(false);
     const {
       target: { value },
     } = event;
     setSelectedValues(
-      // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
     onChange(value);
@@ -29,14 +29,23 @@ const CustomSelect = ({ name, options, title, onChange }) => {
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
+        width: 300,
       },
     },
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   return (
-    <MainCard title={title}>
-      <FormControl fullWidth>
+    <div>
+      <InputLabel id={`title`}>{title}</InputLabel>
+      <FormControl sx={{mt:'1%'}} fullWidth>
         <InputLabel id={`select-${name}-label`}>{name}</InputLabel>
         <Select
           labelId={`select-${name}-label`}
@@ -44,6 +53,9 @@ const CustomSelect = ({ name, options, title, onChange }) => {
           multiple
           value={selectedValues}
           onChange={handleChange}
+          open={open}
+          onClose={handleClose}
+          onOpen={handleOpen}
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected?.map((value) => options?.find((option) => option?.value === value)?.label).join(', ')}
           MenuProps={MenuProps}
@@ -57,7 +69,7 @@ const CustomSelect = ({ name, options, title, onChange }) => {
           ))}
         </Select>
       </FormControl>
-    </MainCard>
+    </div>
   );
 };
 

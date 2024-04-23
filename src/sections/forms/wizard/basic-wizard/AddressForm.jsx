@@ -5,6 +5,7 @@ import CustomSelect from 'components/InputFieldDropDown';
 import MainCard from 'components/MainCard';
 import RadioGroupForms from 'components/RadioButton';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
@@ -57,7 +58,7 @@ let reasonStaticData = [
   }
 ];
 
-export default function AddressForm({ clearForm, startDateFun, endDateFun, setLocationListFun, setProviderListFun, setSelectedReasonFun }) {
+export default function AddressForm({ setValue, value, setRadioSelected, radioSelected, startDateFun, endDateFun, setLocationListFun, setProviderListFun, setSelectedReasonFun }) {
   const [locatonList, setLocationList] = useState([]);
   const [reasonMap, setReasonMap] = useState(reasonStaticData)
   const [selectedLocation, setSelectedLocation] = useState([]);
@@ -66,7 +67,6 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
   const [selectedProvider, setSelectedProvider] = useState([]);
   const [providerList, setProviderList] = useState([]);
   const [Reason, setReason] = useState();
-  const [selectedReasonData, setSelectedReasonData] = useState([]);
   const [SelectedReason, setSelectedReason] = useState()
 
   useEffect(() => {
@@ -186,7 +186,6 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
         console.log(SelectedValue?.appointment_type_id, 'SelectedValue?.appointment_type_id');
         await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id })
           .then((res) => {
-            setSelectedReasonData(res);
             const Reason_Location_Data = res?.data?.map((value) => ({
               value: value?.loc_abbr,
               label: value?.loc_desc
@@ -195,8 +194,6 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
               value: provider?.pro_abbr,
               label: provider?.pro_fname || provider?.pro_lname
             }));
-            console.log(JSON?.stringify(res, null, 2) + 'ReasonDataList');
-            console.log(JSON?.stringify(Reason_Provider_Data, null, 2) + 'Reason_Provider_Data');
             setProviderList(Reason_Provider_Data);
             setLocationList(Reason_Location_Data);
           })
@@ -242,25 +239,31 @@ export default function AddressForm({ clearForm, startDateFun, endDateFun, setLo
       </Button>
       <MainCard title="Book Appointment">
         <RadioGroupForms
+          setValue={(value) => setValue(value)}
+          value={value}
+          setRadioSelected={(next) => setRadioSelected(next)}
+          radioSelected={radioSelected}
           startDate={(data) => setStartDate(data)}
           endDate={(data) => setEndDate(data)}
         />
-        <Grid sx={{ mt: '3%' }}>
-          <CustomSelect
-            name="Select Location"
-            options={locatonList}
-            title="Location"
-            value={selectedLocation}
-            onChange={handleLocationChange}
-          />
-        </Grid>
-        <Grid sx={{ mt: '3%' }}>
-          <CustomSelect name="Select Provider" options={providerList} title="Provider" onChange={handleProviderChange} />
-        </Grid>
-        <Grid sx={{ mt: '3%' }}>
-          <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
-        </Grid>
-      </MainCard>
+        <MainCard sx={{ mt: "5%" }} title="Filters" >
+          <Grid sx={{ mt: '1%' }}>
+            <CustomSelect
+              name="Select Location"
+              options={locatonList}
+              title="Location"
+              value={selectedLocation}
+              onChange={handleLocationChange}
+            />
+          </Grid>
+          <Grid sx={{ mt: '3%' }}>
+            <CustomSelect name="Select Provider" options={providerList} title="Provider" onChange={handleProviderChange} />
+          </Grid>
+          <Grid sx={{ mt: '3%' }}>
+            <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
+          </Grid>
+        </MainCard>
+      </MainCard >
     </>
 
   );

@@ -45,6 +45,7 @@ function MainCard(
   return (
     <Card
       sx={{
+        width:'100%',
         position: 'relative',
         border: border ? '1px solid' : 'none',
         borderRadius: 1,

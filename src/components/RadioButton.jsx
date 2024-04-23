@@ -3,7 +3,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import MainCard from 'components/MainCard';
-import dayjs from 'dayjs';
 import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -11,13 +10,9 @@ import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
 import Button from '@mui/material/Button';
 import moment from 'moment';
 
-export default function RadioGroupForms({ startDate, endDate }) {
+export default function RadioGroupForms({ setValue, value, setRadioSelected, radioSelected,startDate, endDate }) {
   const [selecteDateRange, setSelecteDateRange] = useState(false);
-  const [radioSelected, setRadioSelected] = useState("today");
-  const [value, setValue] = useState([
-    null,
-    null,
-  ]);
+  // const [radioSelected, setRadioSelected] = useState("today");
   const today = moment();
 
   useEffect(() => {
