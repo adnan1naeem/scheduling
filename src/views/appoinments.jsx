@@ -84,8 +84,8 @@ export default function DenseTable({ nextAvailableSlotData, availableSlotData, s
               </TableRow>
             </TableHead>
             <TableBody>
-              {availableSlot?.map((row) => (
-                <TableRow hover key={row?.index}>
+              {availableSlot?.map((row, index) => (
+                <TableRow hover key={index}>
                   <TableCell sx={{ pl: 3 }} component="th" scope="row">
                     {row?.location_description}
                   </TableCell>

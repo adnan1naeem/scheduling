@@ -31,6 +31,10 @@ import FullScreenLoading from './FullScreenLoading';
 export default function BasicWizard() {
   const [activeStep, setActiveStep] = useState(0);
   const [startDate, setStartDate] = useState(null);
+  const [bookAppintment, setBookAppintment] = useState(false);
+
+  const [loading, setLoading] = React.useState(false);
+  const [availableSlot, setAvailableSlot] = React.useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [nextAvailableSlotData, setNextAvailableSlotData] = useState(false);
   const [endDate, setEndDate] = useState(null);
@@ -86,25 +90,22 @@ export default function BasicWizard() {
   };
 
   const handleConfirmAppointment = async () => {
+    setBookAppintment(true);
     const params = {
-      patientId: '470560',
-      datetime: `${selectedRecord?.date} ${selectedRecord?.start}`,
+      patientId: patientIdParam || 197520,
+      datetime: `${moment(selectedRecord?.date)?.format("MM/DD/YYYY")} ${selectedRecord?.start}`,
       duration: selectedRecord?.duration,
-      location: selectedRecord.location,
-      patient_name:
-        'Mohsin Naeem',
-      practitioner: selectedRecord.provider,
-      reason_for_visit: !reason ? 'ACT OV' : reason,
+      location: selectedRecord?.location?.trim(),
+      patient_name: fullNameParam || 'Mohsin Naeem',
+      practitioner: selectedRecord?.provider?.trim(),
+      reason_for_visit: !reason ? 'ACT OV' : reason?.trim(),
       visitType: !reason ? 'ACT OV' : reason,
       self_schedule: 1
     };
-    const providerData = await booAppiontment('appointments/save', 'POST', params);
-    console.log(JSON.stringify(providerData, null, 2), "providerDataproviderDataproviderData");
-    handleNext();
+
+    bookAppiontmentFun('appointments/save', 'POST', params);
   };
 
-  const [loading, setLoading] = React.useState(false);
-  const [availableSlot, setAvailableSlot] = React.useState([]);
   let count = false;
   React.useEffect(() => {
     if (!count) {
@@ -147,28 +148,26 @@ export default function BasicWizard() {
     setLoading(false);
   }
 
-  const booAppiontment = async (url, method, params) => {
-    // let config = {
-    //   method: method,
-    //   url: `https://hero.epicpc.com/api/${url}`,
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //     Authorization:
-    //       'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTAuMC4xLjE0Mi9hcGkvbG9naW4iLCJpYXQiOjE2OTIwMDA0MDQsIm5iZiI6MTY5MjAwMDQwNCwianRpIjoicWVoVjFhVTZ5R0c1RHFtOCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.FHQT06K6DLf2mtHfD1QV0PLS5YpKNoqoOB725PQJGgA'
-    //   },
-    //   params: params
-    // };
-
-    console.log(JSON.stringify(params, null, 2), "configconfigconfig");
-
+  const bookAppiontmentFun = async (url, method, params) => {
     try {
-      const response = await axios.post(`https://hero.epicpc.com/api/appointments/save`,
-        null,
-        { params }
-      );
-      return response?.data;
+      await axios.post("https://eh-axios-server.vercel.app/fetch-data", {
+        url: `https://hero.epicpc.com/api/${url}`,
+        type: method,
+        requestData: params,
+      })
+        .then((res) => {
+          setBookAppintment(false);
+          if (res?.data?.responseData?.success) {
+            handleNext();
+          } else {
+            // alert("Try agian later!")
+          }
+        })
+        .catch((err) => {
+          setBookAppintment(false);
+        });
     } catch (error) {
+      setBookAppintment(false);
       throw error;
     }
   };
@@ -184,8 +183,6 @@ export default function BasicWizard() {
       },
       params: params
     };
-
-    console.log(JSON.stringify(config, null, 2));
 
     try {
       const response = await axios.request(config);
@@ -211,8 +208,8 @@ export default function BasicWizard() {
     <>
       <div style={{
         display: 'flex',
-        justifyContent:'center',
-        marginBottom:'4%'
+        justifyContent: 'center',
+        marginBottom: '4%'
 
       }}>
 
@@ -251,7 +248,7 @@ export default function BasicWizard() {
                 Thank you for your Appointment.
               </Typography>
               <Typography variant="subtitle1">
-                We have emailed your Appointment confirmation, and will send you an update when your Appointment status has
+                Your Appointment is confirmed, we will send you an update when your Appointment status has
                 been changed.
               </Typography>
               <Stack direction="row" justifyContent="flex-end">
@@ -333,7 +330,7 @@ export default function BasicWizard() {
                           opacity: 0.1
                         }
                       }
-                    }}>
+                    }} loading={bookAppintment}>
                       Confirm Appointment
                     </LoadingButton>
                   </AnimateButton>
