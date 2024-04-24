@@ -74,6 +74,20 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
     setAvailableSlot([...sortedData]);
   };
 
+  const handleDateSort = (column) => {
+    // var times = ['01:00 am', '06:00 pm', '12:00 pm', '03:00 am', '12:00 am'];
+    const isAsc = sortBy === column && sortOrder === 'asc';
+    setSortBy(column);
+    setSortOrder(isAsc ? 'desc' : 'asc');
+    const sortedData = [...data].sort((a, b) => {
+      if (a[column] < b[column]) return isAsc ? -1 : 1;
+      if (a[column] > b[column]) return isAsc ? 1 : -1;
+      return 0;
+    });
+    setData([...sortedData]);
+    setAvailableSlot([...sortedData]);
+  };
+
   return (
     <MainCard content={false} title="Available Slot" >
       {loading ?

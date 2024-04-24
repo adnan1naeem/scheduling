@@ -5,11 +5,9 @@ import CustomSelect from 'components/InputFieldDropDown';
 import MainCard from 'components/MainCard';
 import RadioGroupForms from 'components/RadioButton';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
-// ==============================|| BASIC WIZARD - ADDRESS ||============================== //
 
 const fetchData = async (url, method, params) => {
   let config = {
@@ -168,8 +166,10 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
         }
       }
     };
-    if (selectedProvider?.length <= 1) {
+    if (selectedProvider?.length <= 0) {
       fetchProvidersForLocation();
+    }else if(selectedProvider?.length > 0){
+      fetchDataAndSetState(selectedProvider);
     }
   }, [selectedLocation]);
 
@@ -223,7 +223,7 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
     <>
       <Button onClick={() => window.location.reload()} variant="contained" sx={{
         zIndex: 1,
-        right: 0, paddingTop: '1%', position: 'absolute',
+        right: 0, position: 'absolute',
         backgroundColor: '#292754', my: "1.5%", mr: 5,
         '&:hover': {
           backgroundColor: '#292754'
@@ -246,7 +246,7 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
           startDate={(data) => setStartDate(data)}
           endDate={(data) => setEndDate(data)}
         />
-        <MainCard sx={{ mt: "5%" }} title="Filters" >
+        <MainCard sx={{ mt: "3%" }} title="Filters" >
           <Grid sx={{ mt: '1%' }}>
             <CustomSelect
               name="Select Location"
