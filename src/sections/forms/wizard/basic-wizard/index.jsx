@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import moment from "moment";
 import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/legacy/image';
 import logoImage from '/public/assets/images/contact/image.png';
 
@@ -44,14 +45,19 @@ export default function BasicWizard() {
   const [locatonList, setLocationList] = useState([]);
   const [providerList, setProviderList] = useState([]);
   const [reason, setReason] = useState(null);
-  const { fullName, patientId } = useParams();
-  const [fullNameParam, setFullNameParam] = useState(fullName);
-  const [patientIdParam, setPatientIdParam] = useState(patientId);
+  const searchParams = useSearchParams();
+  const [fullNameParam, setFullNameParam] = useState(null);
+  const [patientIdParam, setPatientIdParam] = useState(null);
 
   useEffect(() => {
-    if (fullNameParam && patientIdParam) {
-      alert(fullNameParam);
-    }
+    console.log("searchParams", searchParams)
+    const fullName = searchParams.get('fullName')
+    const patientId = searchParams.get('patientId')
+    setFullNameParam(fullName);
+    setPatientIdParam(patientId);
+    console.log(JSON.stringify(searchParams, null, 2), "searchParams")
+    console.log(JSON.stringify(fullName, null, 2), "searchParams")
+    console.log(JSON.stringify(patientId, null, 2), "searchParams")
   }, [])
 
   // step options
@@ -178,8 +184,8 @@ export default function BasicWizard() {
           }
         })
         .catch((err) => {
-          console.log(JSON.stringify(err, null,2), "error");
-          console.log(JSON.stringify(err?.response, null,2), "error message");
+          console.log(JSON.stringify(err, null, 2), "error");
+          console.log(JSON.stringify(err?.response, null, 2), "error message");
           setBookAppintment(false);
         });
     } catch (error) {
