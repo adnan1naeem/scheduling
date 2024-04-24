@@ -74,28 +74,41 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
     setAvailableSlot([...sortedData]);
   };
 
+  console.log(JSON.stringify(availableSlot, null,2))
+
   const handleDateSort = (column) => {
-    // var times = ['01:00 am', '06:00 pm', '12:00 pm', '03:00 am', '12:00 am'];
+    const result = {};
     const isAsc = sortBy === column && sortOrder === 'asc';
     setSortBy(column);
     setSortOrder(isAsc ? 'desc' : 'asc');
-    const sortedData = [...data].sort((a, b) => {
-      if (a[column] < b[column]) return isAsc ? -1 : 1;
-      if (a[column] > b[column]) return isAsc ? 1 : -1;
-      return 0;
+    data?.forEach(item => {
+      const date = item.date;
+      if (!result[date]) {
+        result[date] = [];
+      }
+      result[date].push(item);
     });
-    setData([...sortedData]);
-    setAvailableSlot([...sortedData]);
+    for (const date in result) {
+        result[date]?.reverse();
+    }
+    const sortedDates = Object.keys(result);
+    const combinedData = sortedDates.reduce((acc, date) => {
+      return acc.concat(result[date]);
+    }, []);
+
+    setData(combinedData);
+    setAvailableSlot(combinedData);  
+
   };
 
   return (
-    <MainCard content={false} title="Available Slot" >
+    <MainCard>
       {loading ?
         <Box sx={{ padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
           <CircularProgress sx={{ color: '#292754' }} />
         </Box> :
-        <TableContainer sx={{ maxHeight: 540, overflowY: 'auto' }}>
-          <Table sx={{ minWidth: 650 }} size="small">
+        <TableContainer sx={{ maxHeight: 500, overflowY: 'auto' }}>
+          <Table sx={{ width: 600 }} size="small">
             <TableHead>
               <TableRow>
                 <TableCell>
@@ -129,7 +142,7 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
                   <TableSortLabel
                     active={sortBy === 'start'}
                     direction={sortBy === 'start' ? sortOrder : 'asc'}
-                    onClick={() => handleSort('start')}
+                    onClick={() => handleDateSort('start')}
                   >
                     Time
                   </TableSortLabel>
@@ -142,8 +155,8 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
             <TableBody>
               {availableSlot?.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.location}</TableCell>
-                  <TableCell>{row.provider}</TableCell>
+                  <TableCell>{row.location_description}</TableCell>
+                  <TableCell>{row.provider_name}</TableCell>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.start}</TableCell>
                   <TableCell>

@@ -168,7 +168,7 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
     };
     if (selectedProvider?.length <= 0) {
       fetchProvidersForLocation();
-    }else if(selectedProvider?.length > 0){
+    } else if (selectedProvider?.length > 0) {
       fetchDataAndSetState(selectedProvider);
     }
   }, [selectedLocation]);
@@ -221,50 +221,31 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
 
   return (
     <>
-      <Button onClick={() => window.location.reload()} variant="contained" sx={{
-        zIndex: 1,
-        right: 0, position: 'absolute',
-        backgroundColor: '#292754', my: "1.5%", mr: 5,
-        '&:hover': {
-          backgroundColor: '#292754'
-        },
-        '&:active': {
-          backgroundColor: 'white',
-          '&::after': {
-            opacity: 0.1
-          }
-        }
-      }}>
-        {'Clear Form'}
-      </Button>
-      <MainCard title="Book Appointment">
-        <RadioGroupForms
-          setValue={(value) => setValue(value)}
-          value={value}
-          setRadioSelected={(next) => setRadioSelected(next)}
-          radioSelected={radioSelected}
-          startDate={(data) => setStartDate(data)}
-          endDate={(data) => setEndDate(data)}
-        />
-        <MainCard sx={{ mt: "3%" }} title="Filters" >
-          <Grid sx={{ mt: '1%' }}>
-            <CustomSelect
-              name="Select Location"
-              options={locatonList}
-              title="Location"
-              value={selectedLocation}
-              onChange={handleLocationChange}
-            />
-          </Grid>
-          <Grid sx={{ mt: '3%' }}>
-            <CustomSelect name="Select Provider" options={providerList} title="Provider" onChange={handleProviderChange} />
-          </Grid>
-          <Grid sx={{ mt: '3%' }}>
-            <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
-          </Grid>
-        </MainCard>
-      </MainCard >
+      <RadioGroupForms
+        setValue={(value) => setValue(value)}
+        value={value}
+        setRadioSelected={(next) => setRadioSelected(next)}
+        radioSelected={radioSelected}
+        startDate={(data) => setStartDate(data)}
+        endDate={(data) => setEndDate(data)}
+      />
+      <MainCard sx={{ mt: "3%" }} title="Filters" >
+        <Grid sx={{ mt: '1%' }}>
+          <CustomSelect
+            name="Select Location"
+            options={locatonList}
+            title="Location"
+            value={selectedLocation}
+            onChange={handleLocationChange}
+          />
+        </Grid>
+        <Grid sx={{ mt: '3%' }}>
+          <CustomSelect name="Select Provider" options={providerList} title="Provider" onChange={handleProviderChange} />
+        </Grid>
+        <Grid sx={{ mt: '3%' }}>
+          <CustomSelectReason name="Reason" options={options} onChange={handleReasonChange} title="Reason" />
+        </Grid>
+      </MainCard>
     </>
-
   );
 }

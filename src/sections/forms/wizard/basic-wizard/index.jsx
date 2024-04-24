@@ -242,7 +242,7 @@ export default function BasicWizard() {
         />
       </Box>
 
-      <MainCard title="Appointment">
+      <Box borderRadius={3} sx={{ backgroundColor: 'white', padding: 1 }}>
         {loading && <FullScreenLoading />}
         <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
           {steps?.map((label) => (
@@ -281,49 +281,19 @@ export default function BasicWizard() {
             </>
           ) : (
             <>
-              {/* {loading &&
-              <Box sx={{ flex: 1, padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                <CircularProgress />
-              </Box>
-            } */}
               {getStepContent(activeStep)}
-              <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'flex-end'}>
+              <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'start'}>
                 {activeStep !== 0 && (
                   <Button onClick={handleBack} sx={{ my: 3, ml: 1, color: "#292754" }}>
                     Back
                   </Button>
                 )}
-                {activeStep == 0 && <Box spacing={30}
-                  sx={{ display: 'flex', flexWrap: "wrap" }}
-                  justifyContent={'center'}
-                  alignItems={'center'}>
-                  <Grid item sx={{ mt: '3%' }}>
-                    <Button variant="contained" sx={{
-                      backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' },
+                {activeStep == 0 &&
+                  <Box sx={{display:'flex', justifyContent:'space-between'}}>
+                    <Button onClick={() => window.location.reload()} variant="contained" sx={{
+                      backgroundColor: '#292754', my: "1.5%", mr: 5,
                       '&:hover': {
-                        backgroundColor: '#2470AC'
-                      },
-                      '&:active': {
-                        backgroundColor: 'white',
-                        '&::after': {
-                          opacity: 0.1
-                        }
-                      }
-                    }} onClick={handleNextAvailableSlot}>
-                      Next Available Slot
-                    </Button>
-                  </Grid>
-                  <Box sx={{
-                    mr: { xs: 1, sm: 5 },
-                  }}></Box>
-                  <Grid item sx={{ mt: '3%' }}>
-                    <Button onClick={() => {
-                      setNextAvailableSlotData(false)
-                      handleNext()
-                    }} variant="contained" sx={{
-                      backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' },
-                      '&:hover': {
-                        backgroundColor: '#0B8588'
+                        backgroundColor: '#292754'
                       },
                       '&:active': {
                         backgroundColor: 'white',
@@ -332,10 +302,55 @@ export default function BasicWizard() {
                         }
                       }
                     }}>
-                      <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
+                      {'Clear Form'}
                     </Button>
-                  </Grid>
-                </Box>}
+                    <Box spacing={30}
+                      sx={{ display: 'flex', flexWrap: "wrap", paddingBottom: 1 }}
+                      justifyContent={'center'}
+                      alignItems={'center'}>
+                      <Grid item sx={{ mt: '3%' }}>
+                        <Button variant="contained" sx={{
+                          backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' },
+                          '&:hover': {
+                            backgroundColor: '#2470AC'
+                          },
+                          '&:active': {
+                            backgroundColor: 'white',
+                            '&::after': {
+                              opacity: 0.1
+                            }
+                          }
+                        }} onClick={handleNextAvailableSlot}>
+                          Next Available Slot
+                        </Button>
+                      </Grid>
+                      <Box sx={{
+                        mr: { xs: 1, sm: 5 },
+                      }}></Box>
+                      <Grid item sx={{ mt: '3%' }}>
+                        <Button onClick={() => {
+                          setNextAvailableSlotData(false)
+                          handleNext()
+                        }} variant="contained" sx={{
+                          backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' },
+                          '&:hover': {
+                            backgroundColor: '#0B8588'
+                          },
+                          '&:active': {
+                            backgroundColor: 'white',
+                            '&::after': {
+                              opacity: 0.1
+                            }
+                          }
+                        }}>
+                          <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
+                        </Button>
+                      </Grid>
+                    </Box>
+                  </Box>
+
+
+                }
                 {activeStep == 1 && null}
                 {activeStep == 2 &&
                   <AnimateButton>
@@ -359,7 +374,7 @@ export default function BasicWizard() {
             </>
           )}
         </>
-      </MainCard>
+      </Box>
     </>
 
   );
