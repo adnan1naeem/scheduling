@@ -82,7 +82,7 @@ export default function BasicWizard() {
           handleNextFun={(next) => handleNext()}
         />;
       case 2:
-        return <Review patientId={patientIdParam} fullName={fullNameParam} selectedRecord={selectedRecord} />;
+        return <Review fullName={fullNameParam} selectedRecord={selectedRecord} />;
       default:
         throw new Error('Unknown step');
     }
@@ -178,6 +178,8 @@ export default function BasicWizard() {
           }
         })
         .catch((err) => {
+          console.log(JSON.stringify(err, null,2), "error");
+          console.log(JSON.stringify(err?.response, null,2), "error message");
           setBookAppintment(false);
         });
     } catch (error) {
