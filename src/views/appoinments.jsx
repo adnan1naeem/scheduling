@@ -107,8 +107,8 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
         <Box sx={{ padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
           <CircularProgress sx={{ color: '#292754' }} />
         </Box> :
-        <TableContainer sx={{ maxHeight: 500, overflowY: 'auto' }}>
-          <Table sx={{ width: 600 }} size="small">
+        <TableContainer sx={{ maxHeight: 540, overflowY: 'auto' }}>
+          <Table sx={{ width:'100%'}} size="small">
             <TableHead>
               <TableRow>
                 <TableCell>
