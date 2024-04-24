@@ -11,7 +11,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import moment from "moment";
-import { useParams } from 'react-router-dom';
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/legacy/image';
 import logoImage from '/public/assets/images/contact/image.png';
@@ -50,14 +49,10 @@ export default function BasicWizard() {
   const [patientIdParam, setPatientIdParam] = useState(null);
 
   useEffect(() => {
-    console.log("searchParams", searchParams)
     const fullName = searchParams.get('fullName')
     const patientId = searchParams.get('patientId')
     setFullNameParam(fullName);
     setPatientIdParam(patientId);
-    console.log(JSON.stringify(searchParams, null, 2), "searchParams")
-    console.log(JSON.stringify(fullName, null, 2), "searchParams")
-    console.log(JSON.stringify(patientId, null, 2), "searchParams")
   }, [])
 
   // step options
