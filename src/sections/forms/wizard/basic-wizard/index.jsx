@@ -25,6 +25,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import FullScreenLoading from './FullScreenLoading';
+import { width } from '../../../../../node_modules/@mui/system/index';
 // ==============================|| FORMS WIZARD - BASIC ||============================== //
 
 export default function BasicWizard() {
@@ -289,8 +290,10 @@ export default function BasicWizard() {
                   </Button>
                 )}
                 {activeStep == 0 &&
-                  <Box sx={{display:'flex', justifyContent:'space-between'}}>
+                  <Box sx={{display:'flex',width:"100%", justifyContent:'space-between'}}>
                     <Button onClick={() => window.location.reload()} variant="contained" sx={{
+                      height: 40,
+                      width: 120,
                       backgroundColor: '#292754', my: "1.5%", mr: 5,
                       '&:hover': {
                         backgroundColor: '#292754'
