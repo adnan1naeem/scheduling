@@ -7,6 +7,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const CustomSelect = ({ name, options, title, onChange }) => {
   const [selectedValues, setSelectedValues] = useState([]);
@@ -41,6 +42,30 @@ const CustomSelect = ({ name, options, title, onChange }) => {
   const handleOpen = () => {
     setOpen(true);
   };
+  const deepPurple = {
+    50: '#41257b',
+    100: '#41257b',
+    200: '#41257b',
+    300: '#41257b',
+    400: '#41257b',
+    500: '#41257b',
+    600: '#41257b',
+    700: '#41257b',
+    800: '#41257b',
+    900: '#41257b',
+    A100: '#41257b',
+    A200: '#41257b',
+    A400: '#41257b',
+    A700: '#41257b'
+    
+  };
+  
+  const { palette } = createTheme();
+  const theme = createTheme({
+    palette: {
+      deepPurple: palette.augmentColor({ color: deepPurple  })
+    }
+  });
 
   return (
     <div>
@@ -62,10 +87,14 @@ const CustomSelect = ({ name, options, title, onChange }) => {
         >
           {(options === undefined || options?.length <= 0) ? <Box sx={{ ml: 2 }}><ListItemText primary={"No record found!"} /></Box> : null}
           {options?.map((name) => (
+           
             <MenuItem key={name} value={name?.value}>
-              <Checkbox checked={selectedValues.indexOf(name?.value) > -1} />
+            <ThemeProvider theme={theme}>
+              <Checkbox color="deepPurple"  checked={selectedValues.indexOf(name?.value) > -1} />
               <ListItemText primary={name?.label} />
+              </ThemeProvider>
             </MenuItem>
+           
           ))}
         </Select>
       </FormControl>
