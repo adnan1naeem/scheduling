@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import moment from 'moment';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export default function RadioGroupForms({ setValue, value, setRadioSelected, radioSelected, startDate, endDate }) {
   const [selecteDateRange, setSelecteDateRange] = useState(false);
@@ -48,26 +49,56 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
   const handleCloseDateRange = () => {
     setSelecteDateRange(false);
   };
+  const deepPurple = {
+    50: '#41257b',
+    100: '#41257b',
+    200: '#41257b',
+    300: '#41257b',
+    400: '#41257b',
+    500: '#41257b',
+    600: '#41257b',
+    700: '#41257b',
+    800: '#41257b',
+    900: '#41257b',
+    A100: '#41257b',
+    A200: '#41257b',
+    A400: '#41257b',
+    A700: '#41257b'
+  };
+  
+  const { palette } = createTheme();
+  const theme = createTheme({
+    palette: {
+      deepPurple: palette.augmentColor({ color: deepPurple  })
+    }
+  });
 
   return (
     <div>
       <MainCard title="Date">
         <RadioGroup row aria-label="color" value={radioSelected}>
-          <FormControlLabel onClick={() => handleTodayClick()} value="today" control={<Radio />} label="Today" />
-          <FormControlLabel onClick={() => handleTomorrowClick()} value="tomorrow" control={<Radio />} label="Tomorrow" />
-          <FormControlLabel
-            value="dateRange"
-            control={<Radio />}
-            label={
-              value[0] && value[1] ? (
-                <div>{`Date Range: ${value[0].format('MM-DD-YYYY')} to ${value[1].format('MM-DD-YYYY')}`}</div>
-              ) : (
-                <div>{`Date Range`}</div>
-              )
-            }
-            onClick={handleRadioClick}
-            labelPlacement="end"
-          />
+          <ThemeProvider theme={theme}>
+            <FormControlLabel onClick={() => handleTodayClick()} value="today" control={<Radio color="deepPurple" />} label="Today" />
+            <FormControlLabel
+              onClick={() => handleTomorrowClick()}
+              value="tomorrow"
+              control={<Radio color="deepPurple" />}
+              label="Tomorrow"
+            />
+            <FormControlLabel
+              value="dateRange"
+              control={<Radio color="deepPurple" />}
+              label={
+                value[0] && value[1] ? (
+                  <div>{`Date Range: ${value[0].format('MM-DD-YYYY')} to ${value[1].format('MM-DD-YYYY')}`}</div>
+                ) : (
+                  <div>{`Date Range`}</div>
+                )
+              }
+              onClick={handleRadioClick}
+              labelPlacement="end"
+            />
+          </ThemeProvider>
         </RadioGroup>
       </MainCard>
 
@@ -75,7 +106,7 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
         <Box sx={{ p: 2 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoItem label="Select Range">
-              <DateRangeCalendar value={value} onChange={(newValue) => setValue(newValue)} minDate={today} disablePast/>
+              <DateRangeCalendar value={value} onChange={(newValue) => setValue(newValue)} minDate={today} disablePast />
             </DemoItem>
           </LocalizationProvider>
           <Button disabled={value[0] && value[1] ? false : true} variant="contained" onClick={handleCloseDateRange} sx={{ mt: 2 }}>
