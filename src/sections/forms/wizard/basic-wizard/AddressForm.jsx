@@ -6,7 +6,6 @@ import MainCard from 'components/MainCard';
 import RadioGroupForms from 'components/RadioButton';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
-import Button from '@mui/material/Button';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
 
 const fetchData = async (url, method, params) => {
@@ -56,28 +55,40 @@ let reasonStaticData = [
   }
 ];
 
-export default function AddressForm({ setValue, value, setRadioSelected, radioSelected, startDateFun, endDateFun, setLocationListFun, setProviderListFun, setSelectedReasonFun }) {
+export default function AddressForm({
+  setValue,
+  value,
+  setRadioSelected,
+  radioSelected,
+  startDateFun,
+  endDateFun,
+  setLocationListFun,
+  setProviderListFun,
+  setSelectedReasonFun
+}) {
   const [locatonList, setLocationList] = useState([]);
-  const [reasonMap, setReasonMap] = useState(reasonStaticData)
+  const [reasonMap, setReasonMap] = useState(reasonStaticData);
   const [selectedLocation, setSelectedLocation] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState([]);
   const [providerList, setProviderList] = useState([]);
   const [Reason, setReason] = useState();
-  const [SelectedReason, setSelectedReason] = useState()
+  const [SelectedReason, setSelectedReason] = useState();
 
   useEffect(() => {
-    fetchDataAndSetState();
+    fetchLocationDataAndSetState([]);
+    fetchProvidersForLocation();
   }, []);
 
-  const fetchDataAndSetState = async (item) => {
+  const fetchLocationDataAndSetState = async (item) => {
     if (item?.length > 0) {
+      console.log(JSON.stringify(item, null,2), "itemitemitem");
       const params = { provider: item };
       const locationData = await fetchData('location_provider', 'get', params);
       const locationOptions = locationData?.data
-        ?.filter(location => location?.desc !== 'BLUE SKY')
-        .map(location => ({
+        ?.filter((location) => location?.desc !== 'BLUE SKY')
+        .map((location) => ({
           value: location.abbr,
           label: location.desc
         }));
@@ -86,16 +97,16 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
       }
       setReason(locationData?.app_typ);
     } else {
+      console.log(JSON.stringify(item, null,2), "elselselsel");
+
       const locationData = await fetchData('getlocation', 'get');
       const locationOptions = locationData?.data
-        ?.filter(location => location?.desc !== 'BLUE SKY')
-        .map(location => ({
+        ?.filter((location) => location?.desc !== 'BLUE SKY')
+        .map((location) => ({
           value: location.abbr,
           label: location.desc
         }));
-      if (selectedLocation.length <= 0) {
         setLocationList(locationOptions);
-      }
     }
   };
 
@@ -111,70 +122,72 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
   }));
   const options = ReasonData?.length > 0 ? ReasonData : reasons;
 
-  useEffect(() => {
-    if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
-      setReason(null);
-    }
-  }, [selectedLocation, selectedProvider, SelectedReason]);
-
   const handleLocationChange = (selectedOption) => {
     setSelectedLocation(selectedOption);
   };
 
   useEffect(() => {
     if (selectedLocation?.length > 0) {
-      setLocationListFun(selectedLocation)
-    } else {
-      setLocationListFun(null)
-    }
-  }, [selectedLocation])
-
-  useEffect(() => {
-    if (selectedProvider?.length > 0) {
-      setProviderListFun(selectedProvider)
-    } else {
-      setProviderListFun(null)
-    }
-  }, [selectedProvider])
-
-  useEffect(() => {
-    const fetchProvidersForLocation = async () => {
-      if (selectedLocation.length > 0) {
-        try {
-          let params = { location: selectedLocation };
-          const providerData = await fetchData('provider_location', 'get', params);
-          const ProviderOptions = providerData?.data?.map((provider) => ({
-            value: provider?.provider,
-            label: provider?.first_name || provider?.last_name ? `${provider?.first_name} ${provider?.last_name}` : provider?.full_name
-          }));
-          setProviderList(ProviderOptions);
-          setReason(providerData?.app_typ);
-        } catch (error) {
-          console.error('Error fetching provider data:', error);
-        }
-      } else {
-        try {
-          const providerData = await fetchData('getprovider', 'get');
-          const ProviderOptions = providerData?.data?.map((provider) => ({
-            value: provider?.provider,
-            label: provider?.first_name || provider?.last_name ? `${provider?.first_name} ${provider?.last_name}` : provider?.full_name
-          }));
-          setProviderList(ProviderOptions);
-          setReason(null);
-        } catch (error) {
-          console.error('Error fetching provider data:', error);
-        }
-      }
-    };
-    if (selectedProvider?.length <= 0) {
       fetchProvidersForLocation();
-    } else if (selectedProvider?.length > 0) {
-      fetchDataAndSetState(selectedProvider);
+      setLocationListFun(selectedLocation);
+    } else {
+      setLocationListFun(null);
+      fetchProvidersForLocation();
+      fetchLocationDataAndSetState(selectedProvider);
     }
   }, [selectedLocation]);
 
+  useEffect(() => {
+    if (selectedProvider?.length >= 0) {
+      fetchLocationDataAndSetState(selectedProvider);
+      setProviderListFun(selectedProvider);
+    } else {
+      setProviderListFun(null);
+    }
+  }, [selectedProvider]);
+
+  useEffect(() => {
+    if (selectedProvider?.length <= 0) {
+      fetchProvidersForLocation();
+    }
+  }, [selectedLocation]);
+
+  const fetchProvidersForLocation = async () => {
+    if (selectedLocation.length > 0) {
+      try {
+        let params = { location: selectedLocation };
+        const providerData = await fetchData('provider_location', 'get', params);
+        const ProviderOptions = providerData?.data?.map((provider) => ({
+          value: provider?.provider,
+          label: provider?.first_name || provider?.last_name ? `${provider?.first_name} ${provider?.last_name}` : provider?.full_name
+        }));
+        setProviderList(ProviderOptions);
+        setReason(providerData?.app_typ);
+      } catch (error) {
+        console.error('Error fetching provider data:', error);
+      }
+    } else {
+      try {
+        const providerData = await fetchData('getprovider', 'get');
+        const ProviderOptions = providerData?.data?.map((provider) => ({
+          value: provider?.provider,
+          label: provider?.first_name || provider?.last_name ? `${provider?.first_name} ${provider?.last_name}` : provider?.full_name
+        }));
+        setProviderList(ProviderOptions);
+        setReason(null);
+      } catch (error) {
+        console.error('Error fetching provider data:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
+      setReason(null);
+    }
+  }, [selectedLocation, selectedProvider, SelectedReason]);
+
   const handleProviderChange = (selectedOption) => {
-    fetchDataAndSetState(selectedOption);
     setSelectedProvider(selectedOption);
   };
 
@@ -183,7 +196,6 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
     const SelectedValue = reasonMap.find((option) => option.abbreviation === selectedOption);
     try {
       if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
-        console.log(SelectedValue?.appointment_type_id, 'SelectedValue?.appointment_type_id');
         await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id })
           .then((res) => {
             const Reason_Location_Data = res?.data?.map((value) => ({
@@ -194,14 +206,14 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
               value: provider?.pro_abbr,
               label: provider?.pro_fname || provider?.pro_lname
             }));
-            setProviderList(Reason_Provider_Data);
-            setLocationList(Reason_Location_Data);
+            setProviderList([...Reason_Provider_Data]);
+            setLocationList([...Reason_Location_Data]);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        setSelectedReason(SelectedValue);
+        setSelectedReason([...SelectedValue]);
       }
     } catch (error) {
       console.error('Error fetching reason data:', error);
@@ -210,14 +222,14 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
 
   useEffect(() => {
     if (startDate && endDate) {
-      startDateFun(startDate.format('MM-DD-YYYY'))
-      endDateFun(endDate.format('MM-DD-YYYY'))
+      startDateFun(startDate.format('MM-DD-YYYY'));
+      endDateFun(endDate.format('MM-DD-YYYY'));
     }
-  }, [startDate, endDate])
+  }, [startDate, endDate]);
 
   useEffect(() => {
-    setReasonMap(reasonStaticData)
-  }, [])
+    setReasonMap(reasonStaticData);
+  }, []);
 
   return (
     <>
@@ -229,7 +241,7 @@ export default function AddressForm({ setValue, value, setRadioSelected, radioSe
         startDate={(data) => setStartDate(data)}
         endDate={(data) => setEndDate(data)}
       />
-      <MainCard sx={{ mt: "3%" }} title="Filters" >
+      <MainCard sx={{ mt: '3%' }} title="Filters">
         <Grid sx={{ mt: '1%' }}>
           <CustomSelect
             name="Select Location"
