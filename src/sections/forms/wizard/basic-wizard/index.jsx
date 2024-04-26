@@ -142,7 +142,6 @@ export default function BasicWizard() {
   useEffect(() => {
     if (rangeStartDate && rangeEndDate && rangeStartDate != rangeEndDate) {
       getAvailableSlot();
-      setRangeSelected(false);
     } else if (locatonList?.length > 0 || locatonList == null) {
       getAvailableSlot();
     } else if (providerList?.length > 0 || providerList == null) {

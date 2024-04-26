@@ -76,6 +76,7 @@ export default function RadioGroupForms({
   };
 
   const handleCloseDateRange = () => {
+    setRangeSelected(true);
     setSelecteDateRange(false);
   };
   const deepPurple = {
@@ -145,7 +146,7 @@ export default function RadioGroupForms({
             rangeColors={['#41257b', 'transparent', '#41257b']}
           />
           <Button
-            disabled={!value[0]?.startDate || !value[0]?.endDate}
+            disabled={value[0]?.startDate == value[0]?.endDate}
             variant="contained"
             onClick={handleCloseDateRange}
             sx={{
