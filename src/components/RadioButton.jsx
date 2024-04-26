@@ -12,15 +12,24 @@ import Button from '@mui/material/Button';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
 
-export default function RadioGroupForms({ setValue, value, setRadioSelected, radioSelected, startDate, endDate }) {
+export default function RadioGroupForms({
+  setRangeSelected,
+  rangeSelected,
+  RangeStartDate,
+  RangeEndDate,
+  setValue,
+  value,
+  setRadioSelected,
+  radioSelected,
+  startDate
+}) {
   const [selecteDateRange, setSelecteDateRange] = useState(false);
   const today = moment();
-  const [rangeSelected, setRangeSelected] = useState(false);
 
   useEffect(() => {
     if (value[0]?.endDate) {
-      startDate(value[0]?.startDate);
-      endDate(value[0]?.endDate);
+      RangeStartDate(value[0]?.startDate);
+      RangeEndDate(value[0]?.endDate);
     }
   }, [value]);
 
@@ -49,7 +58,6 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     ]);
     setSelecteDateRange(false);
     startDate(today);
-    endDate(today);
   };
 
   const handleTomorrowClick = () => {
@@ -65,7 +73,6 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     const tomorrow = today.add(1, 'days');
     setSelecteDateRange(false);
     startDate(tomorrow);
-    endDate(tomorrow);
   };
 
   const handleCloseDateRange = () => {
@@ -88,12 +95,6 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     A400: '#41257b',
     A700: '#41257b'
   };
-
-  const customRangeColors = [
-    {
-      primary: 'red'
-    }
-  ];
 
   const { palette } = createTheme();
   const theme = createTheme({
@@ -141,18 +142,18 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
             minDate={moment().toDate()}
             ranges={value}
             direction="horizontal"
-            rangeColors={['#0B8588', '#0B8588', '#0B8588']}
-            />
+            rangeColors={['#41257b', 'transparent', '#41257b']}
+          />
           <Button
             disabled={!value[0]?.startDate || !value[0]?.endDate}
             variant="contained"
             onClick={handleCloseDateRange}
             sx={{
               mt: 2,
-              backgroundColor: '#0B8588',
+              backgroundColor: '#41257b',
               width: 100,
               '&:hover': {
-                backgroundColor: '#0B8588'
+                backgroundColor: '#41257b'
               }
             }}
           >

@@ -28,7 +28,6 @@ import FullScreenLoading from './FullScreenLoading';
 
 export default function BasicWizard() {
   const [activeStep, setActiveStep] = useState(0);
-  const [startDate, setStartDate] = useState(null);
   const [bookAppintment, setBookAppintment] = useState(false);
   const [radioSelected, setRadioSelected] = useState('today');
   const [value, setValue] = useState([
@@ -42,7 +41,9 @@ export default function BasicWizard() {
   const [availableSlot, setAvailableSlot] = React.useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [nextAvailableSlotData, setNextAvailableSlotData] = useState(false);
-  const [endDate, setEndDate] = useState(null);
+  const [rangeSelected, setRangeSelected] = useState(false);
+  const [rangeStartDate, setRangeStartDate] = useState(null);
+  const [rangeEndDate, setRangeEndDate] = useState(null);
   const [locatonList, setLocationList] = useState([]);
   const [providerList, setProviderList] = useState([]);
   const [reason, setReason] = useState(null);
@@ -69,9 +70,12 @@ export default function BasicWizard() {
             value={value}
             setRadioSelected={(value) => setRadioSelected(value)}
             radioSelected={radioSelected}
+            rangeSelected={rangeSelected}
+            setRangeSelected={(next) => setRangeSelected(next)}
             clearForm={(next) => clearFormRecord()}
-            startDateFun={(data) => setStartDate(data)}
-            endDateFun={(data) => setEndDate(data)}
+            RangeStartDateFun={(data) => setRangeStartDate(data)}
+            RangeEndDateFun={(data) => setRangeEndDate(data)}
+            startDateFun={(data) => getAvailableSlot(data)}
             setLocationListFun={(data) => setLocationList(data)}
             setProviderListFun={(data) => setProviderList(data)}
             setSelectedReasonFun={(data) => setReason(data)}
@@ -136,8 +140,9 @@ export default function BasicWizard() {
   }, []);
 
   useEffect(() => {
-    if (startDate && endDate && startDate != endDate) {
+    if (rangeStartDate && rangeEndDate && rangeStartDate != rangeEndDate) {
       getAvailableSlot();
+      setRangeSelected(false);
     } else if (locatonList?.length > 0 || locatonList == null) {
       getAvailableSlot();
     } else if (providerList?.length > 0 || providerList == null) {
@@ -145,9 +150,9 @@ export default function BasicWizard() {
     } else if (reason?.length > 0 || reason == null) {
       getAvailableSlot();
     }
-  }, [startDate, endDate, locatonList, providerList, reason]);
+  }, [rangeStartDate, rangeEndDate, locatonList, providerList, reason]);
 
-  const getAvailableSlot = async () => {
+  const getAvailableSlot = async (startDate = null) => {
     setLoading(true);
     let params = {};
     if (locatonList?.length > 0) {
@@ -156,12 +161,15 @@ export default function BasicWizard() {
     if (providerList?.length > 0) {
       params['provider'] = providerList;
     }
-    if (!startDate) {
+    if (startDate) {
+      params['sdate'] = moment(startDate).format('MM-DD-YYYY');
+      params['edate'] = moment(startDate).format('MM-DD-YYYY');
+    } else if (!rangeStartDate) {
       params['sdate'] = moment(new Date()).format('MM-DD-YYYY');
       params['edate'] = moment(new Date()).format('MM-DD-YYYY');
     } else {
-      params['sdate'] = moment(startDate).format('MM-DD-YYYY');
-      params['edate'] = moment(endDate).format('MM-DD-YYYY');
+      params['sdate'] = moment(rangeStartDate).format('MM-DD-YYYY');
+      params['edate'] = moment(rangeEndDate).format('MM-DD-YYYY');
     }
     const providerData = await fetchApiData('appointments', 'get', params);
     setAvailableSlot([...providerData?.data]);
@@ -222,8 +230,8 @@ export default function BasicWizard() {
   const getAppointmentUpdate = () => {
     let allData = false;
     if (
-      startDate != null &&
-      endDate != null &&
+      rangeStartDate != null &&
+      rangeEndDate != null &&
       locatonList?.length > 0 &&
       locatonList &&
       providerList?.length > 0 &&

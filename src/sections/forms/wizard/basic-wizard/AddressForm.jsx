@@ -59,10 +59,13 @@ let reasonStaticData = [
 export default function AddressForm({
   setValue,
   value,
+  setRangeSelected,
+  rangeSelected,
   setRadioSelected,
   radioSelected,
+  RangeStartDateFun,
+  RangeEndDateFun,
   startDateFun,
-  endDateFun,
   setLocationListFun,
   setProviderListFun,
   setSelectedReasonFun
@@ -220,8 +223,8 @@ export default function AddressForm({
 
   useEffect(() => {
     if (startDate && endDate && startDate != endDate) {
-      startDateFun(moment(startDate)?.format('MM-DD-YYYY'));
-      endDateFun(moment(endDate)?.format('MM-DD-YYYY'));
+      RangeStartDateFun(moment(startDate)?.format('MM-DD-YYYY'));
+      RangeEndDateFun(moment(endDate)?.format('MM-DD-YYYY'));
     }
   }, [startDate, endDate]);
 
@@ -234,10 +237,13 @@ export default function AddressForm({
       <RadioGroupForms
         setValue={(value) => setValue(value)}
         value={value}
-        setRadioSelected={(next) => setRadioSelected(next)}
+        rangeSelected={rangeSelected}
+        setRadioSelected={(value) => setRadioSelected(value)}
+        setRangeSelected={(next) => setRangeSelected(next)}
         radioSelected={radioSelected}
-        startDate={(data) => setStartDate(data)}
-        endDate={(data) => setEndDate(data)}
+        RangeStartDate={(data) => setStartDate(data)}
+        RangeEndDate={(data) => setEndDate(data)}
+        startDate={(data) => startDateFun(data)}
       />
       <MainCard sx={{ mt: '3%' }} title="Filters">
         <Grid sx={{ mt: '1%' }}>
