@@ -13,8 +13,6 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
 
 export default function RadioGroupForms({
-  setRangeSelected,
-  rangeSelected,
   RangeStartDate,
   RangeEndDate,
   setValue,
@@ -34,7 +32,6 @@ export default function RadioGroupForms({
   }, [value]);
 
   const handleRadioClick = () => {
-    setRangeSelected(true);
     setValue([
       {
         startDate: new Date(),
@@ -48,7 +45,6 @@ export default function RadioGroupForms({
 
   const handleTodayClick = () => {
     setRadioSelected('today');
-    setRangeSelected(false);
     setValue([
       {
         startDate: '',
@@ -69,14 +65,12 @@ export default function RadioGroupForms({
         key: 'selection'
       }
     ]);
-    setRangeSelected(false);
     const tomorrow = today.add(1, 'days');
     setSelecteDateRange(false);
     startDate(tomorrow);
   };
 
   const handleCloseDateRange = () => {
-    setRangeSelected(true);
     setSelecteDateRange(false);
   };
   const deepPurple = {
@@ -108,6 +102,7 @@ export default function RadioGroupForms({
     event.stopPropagation();
   };
 
+
   return (
     <div>
       <MainCard title="Date">
@@ -124,7 +119,7 @@ export default function RadioGroupForms({
               value="dateRange"
               control={<Radio color="deepPurple" />}
               label={
-                rangeSelected
+                radioSelected === "dateRange"
                   ? `Date Range: ${moment(value[0]?.startDate)?.format('MM-DD-YYYY')} to ${moment(value[0]?.endDate)?.format('MM-DD-YYYY')}`
                   : 'Date Range'
               }

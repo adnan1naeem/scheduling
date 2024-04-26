@@ -41,7 +41,6 @@ export default function BasicWizard() {
   const [availableSlot, setAvailableSlot] = React.useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [nextAvailableSlotData, setNextAvailableSlotData] = useState(false);
-  const [rangeSelected, setRangeSelected] = useState(false);
   const [rangeStartDate, setRangeStartDate] = useState(null);
   const [rangeEndDate, setRangeEndDate] = useState(null);
   const [locatonList, setLocationList] = useState([]);
@@ -68,14 +67,17 @@ export default function BasicWizard() {
           <AddressForm
             setValue={(value) => setValue(value)}
             value={value}
-            setRadioSelected={(value) => setRadioSelected(value)}
+            setRadioSelected={(value) => {
+              setRadioSelected(value);
+              if (value == 'today' || value == 'tomorrow') {
+                getAvailableSlot(value);
+              }
+            }}
             radioSelected={radioSelected}
-            rangeSelected={rangeSelected}
-            setRangeSelected={(next) => setRangeSelected(next)}
             clearForm={(next) => clearFormRecord()}
             RangeStartDateFun={(data) => setRangeStartDate(data)}
             RangeEndDateFun={(data) => setRangeEndDate(data)}
-            startDateFun={(data) => getAvailableSlot(data)}
+            startDateFun={(data) => {}}
             setLocationListFun={(data) => setLocationList(data)}
             setProviderListFun={(data) => setProviderList(data)}
             setSelectedReasonFun={(data) => setReason(data)}
@@ -93,7 +95,7 @@ export default function BasicWizard() {
           />
         );
       case 2:
-        return <Review fullName={fullNameParam} selectedRecord={selectedRecord} />;
+        return <Review reason={reason} fullName={fullNameParam} selectedRecord={selectedRecord} />;
       default:
         throw new Error('Unknown step');
     }
@@ -111,7 +113,7 @@ export default function BasicWizard() {
 
   const handleNextAvailableSlot = async () => {
     setNextAvailableSlotData(true);
-    handleNext();
+    setActiveStep(activeStep + 1);
   };
 
   const handleConfirmAppointment = async () => {
@@ -123,35 +125,26 @@ export default function BasicWizard() {
       location: selectedRecord?.location?.trim(),
       patient_name: fullNameParam || 'Mohsin Naeem',
       practitioner: selectedRecord?.provider?.trim(),
-      reason_for_visit: !reason ? 'ACT OV' : reason?.trim(),
-      visitType: !reason ? 'ACT OV' : reason,
+      reason_for_visit: !reason?.abbreviation ? 'ACT OV' : reason?.abbreviation?.trim(),
+      visitType: !reason?.abbreviation ? 'ACT OV' : reason?.abbreviation,
       self_schedule: 1
     };
-
     bookAppiontmentFun('appointments/save', 'POST', params);
   };
 
-  let count = false;
-  React.useEffect(() => {
-    if (!count) {
-      count = true;
-      getAvailableSlot();
-    }
-  }, []);
-
   useEffect(() => {
     if (rangeStartDate && rangeEndDate && rangeStartDate != rangeEndDate) {
-      getAvailableSlot();
+      getAvailableSlot(radioSelected);
     } else if (locatonList?.length > 0 || locatonList == null) {
       getAvailableSlot();
     } else if (providerList?.length > 0 || providerList == null) {
       getAvailableSlot();
-    } else if (reason?.length > 0 || reason == null) {
+    } else if (reason?.abbreviation?.length > 0) {
       getAvailableSlot();
     }
   }, [rangeStartDate, rangeEndDate, locatonList, providerList, reason]);
 
-  const getAvailableSlot = async (startDate = null) => {
+  const getAvailableSlot = async (dateTime = null) => {
     setLoading(true);
     let params = {};
     if (locatonList?.length > 0) {
@@ -160,18 +153,20 @@ export default function BasicWizard() {
     if (providerList?.length > 0) {
       params['provider'] = providerList;
     }
-    if (startDate) {
-      params['sdate'] = moment(startDate).format('MM-DD-YYYY');
-      params['edate'] = moment(startDate).format('MM-DD-YYYY');
-    } else if (!rangeStartDate) {
+    if (dateTime == 'today') {
       params['sdate'] = moment(new Date()).format('MM-DD-YYYY');
       params['edate'] = moment(new Date()).format('MM-DD-YYYY');
+    } else if (dateTime == 'tomorrow') {
+      params['sdate'] = moment(new Date()).add(1, 'days').format('MM-DD-YYYY');
+      params['edate'] = moment(new Date()).add(1, 'days').format('MM-DD-YYYY');
     } else {
       params['sdate'] = moment(rangeStartDate).format('MM-DD-YYYY');
       params['edate'] = moment(rangeEndDate).format('MM-DD-YYYY');
     }
     const providerData = await fetchApiData('appointments', 'get', params);
-    setAvailableSlot([...providerData?.data]);
+    if (providerData?.data?.length >= 0) {
+      setAvailableSlot([...providerData?.data]);
+    }
     setLoading(false);
   };
 
@@ -235,7 +230,7 @@ export default function BasicWizard() {
       locatonList &&
       providerList?.length > 0 &&
       providerList &&
-      reason != null
+      reason?.abbreviation != null
     ) {
       allData = false;
     }

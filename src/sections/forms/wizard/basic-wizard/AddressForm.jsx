@@ -59,8 +59,6 @@ let reasonStaticData = [
 export default function AddressForm({
   setValue,
   value,
-  setRangeSelected,
-  rangeSelected,
   setRadioSelected,
   radioSelected,
   RangeStartDateFun,
@@ -79,11 +77,6 @@ export default function AddressForm({
   const [providerList, setProviderList] = useState([]);
   const [Reason, setReason] = useState();
   const [SelectedReason, setSelectedReason] = useState();
-
-  useEffect(() => {
-    fetchLocationDataAndSetState([]);
-    fetchProvidersForLocation();
-  }, []);
 
   const fetchLocationDataAndSetState = async (item) => {
     if (item?.length > 0) {
@@ -193,8 +186,8 @@ export default function AddressForm({
   };
 
   const handleReasonChange = async (selectedOption) => {
-    setSelectedReasonFun(selectedOption);
     const SelectedValue = reasonMap.find((option) => option.abbreviation === selectedOption);
+    setSelectedReasonFun(SelectedValue);
     try {
       if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
         await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id })
@@ -205,7 +198,7 @@ export default function AddressForm({
             }));
             const Reason_Provider_Data = res?.data?.map((provider) => ({
               value: provider?.pro_abbr,
-              label: provider?.pro_fname || provider?.pro_lname
+              label: provider?.pro_fname || provider?.pro_lname ? `${provider?.pro_fname} ${provider?.pro_lname}` : provider?.full_name
             }));
             setProviderList([...Reason_Provider_Data]);
             setLocationList([...Reason_Location_Data]);
@@ -237,9 +230,7 @@ export default function AddressForm({
       <RadioGroupForms
         setValue={(value) => setValue(value)}
         value={value}
-        rangeSelected={rangeSelected}
         setRadioSelected={(value) => setRadioSelected(value)}
-        setRangeSelected={(next) => setRangeSelected(next)}
         radioSelected={radioSelected}
         RangeStartDate={(data) => setStartDate(data)}
         RangeEndDate={(data) => setEndDate(data)}

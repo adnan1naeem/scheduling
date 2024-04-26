@@ -1,5 +1,5 @@
 // material-ui
-"use client"
+'use client';
 import React from 'react';
 import MainCard from 'components/MainCard';
 import axios from 'axios';
@@ -9,7 +9,14 @@ import Button from '@mui/material/Button';
 import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel } from '@mui/material';
 import { useState } from 'react';
 
-export default function DenseTable({ locatonList, providerList, nextAvailableSlotData, availableSlotData, selectedRecordFun, handleNextFun }) {
+export default function DenseTable({
+  locatonList,
+  providerList,
+  nextAvailableSlotData,
+  availableSlotData,
+  selectedRecordFun,
+  handleNextFun
+}) {
   const [loading, setLoading] = React.useState(false);
   const [availableSlot, setAvailableSlot] = React.useState([...availableSlotData]);
 
@@ -17,16 +24,18 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
 
+  let count = false;
   React.useEffect(() => {
     (async () => {
-      if (nextAvailableSlotData) {
+      if (nextAvailableSlotData && !count) {
+        count = true;
         setLoading(true);
         let params = {};
         if (locatonList?.length > 0) {
-          params['location'] = locatonList
+          params['location'] = locatonList;
         }
         if (providerList?.length > 0) {
-          params['provider'] = providerList
+          params['provider'] = providerList;
         }
         const providerData = await fetchData('nextAvailableApp', 'get', params);
         setAvailableSlot([...providerData?.data]);
@@ -34,7 +43,7 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
         setLoading(false);
       }
     })();
-  }, [])
+  }, []);
 
   const fetchData = async (url, method, params) => {
     let config = {
@@ -58,8 +67,8 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
 
   const handleNext = (row) => {
     selectedRecordFun(row);
-    handleNextFun(true)
-  }
+    handleNextFun(true);
+  };
 
   const handleSort = (column) => {
     const isAsc = sortBy === column && sortOrder === 'asc';
@@ -74,14 +83,12 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
     setAvailableSlot([...sortedData]);
   };
 
-  console.log(JSON.stringify(availableSlot, null,2))
-
   const handleDateSort = (column) => {
     const result = {};
     const isAsc = sortBy === column && sortOrder === 'asc';
     setSortBy(column);
     setSortOrder(isAsc ? 'desc' : 'asc');
-    data?.forEach(item => {
+    data?.forEach((item) => {
       const date = item.date;
       if (!result[date]) {
         result[date] = [];
@@ -89,7 +96,7 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
       result[date].push(item);
     });
     for (const date in result) {
-        result[date]?.reverse();
+      result[date]?.reverse();
     }
     const sortedDates = Object.keys(result);
     const combinedData = sortedDates.reduce((acc, date) => {
@@ -97,18 +104,18 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
     }, []);
 
     setData(combinedData);
-    setAvailableSlot(combinedData);  
-
+    setAvailableSlot(combinedData);
   };
 
   return (
     <MainCard>
-      {loading ?
-        <Box sx={{ padding: 10, display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+      {loading ? (
+        <Box sx={{ padding: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <CircularProgress sx={{ color: '#292754' }} />
-        </Box> :
+        </Box>
+      ) : (
         <TableContainer sx={{ maxHeight: 540, overflowY: 'auto' }}>
-          <Table sx={{ width:'100%'}} size="small">
+          <Table sx={{ width: '100%' }} size="small">
             <TableHead>
               <TableRow>
                 <TableCell>
@@ -147,9 +154,7 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
                     Time
                   </TableSortLabel>
                 </TableCell>
-                <TableCell>
-                  Confirm
-                </TableCell>
+                <TableCell>Confirm</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -160,18 +165,22 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.start}</TableCell>
                   <TableCell>
-                    <Button onClick={() => handleNext(row)} variant="contained" sx={{
-                      backgroundColor: '#292754',
-                      '&:hover': {
-                        backgroundColor: '#292754'
-                      },
-                      '&:active': {
-                        backgroundColor: 'white',
-                        '&::after': {
-                          opacity: 0.1
+                    <Button
+                      onClick={() => handleNext(row)}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: '#292754',
+                        '&:hover': {
+                          backgroundColor: '#292754'
+                        },
+                        '&:active': {
+                          backgroundColor: 'white',
+                          '&::after': {
+                            opacity: 0.1
+                          }
                         }
-                      }
-                    }}>
+                      }}
+                    >
                       {'confirm'}
                     </Button>
                   </TableCell>
@@ -180,7 +189,7 @@ export default function DenseTable({ locatonList, providerList, nextAvailableSlo
             </TableBody>
           </Table>
         </TableContainer>
-      }
+      )}
     </MainCard>
   );
 }

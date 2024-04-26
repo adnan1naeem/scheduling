@@ -5,7 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 // ==============================|| BASIC WIZARD - REVIEW ||============================== //
 
-export default function Review({ fullName, selectedRecord }) {
+export default function Review({ reason, fullName, selectedRecord }) {
   return (
     <>
       <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
@@ -13,23 +13,28 @@ export default function Review({ fullName, selectedRecord }) {
       </Typography>
       <List disablePadding>
         <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary={"FullName"} />
-          <Typography gutterBottom>{`${fullName || "Mohsin Naeem"}`}</Typography>
+          <ListItemText primary={'Full Name'} />
+          <Typography gutterBottom>{`${fullName || 'Mohsin Naeem'}`}</Typography>
         </ListItem>
         <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary={"Location"} />
+          <ListItemText primary={'Location'} />
           <Typography gutterBottom>{selectedRecord?.location_description}</Typography>
         </ListItem>
         <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary={"Provider"} />
+          <ListItemText primary={'Provider'} />
           <Typography gutterBottom>{selectedRecord?.provider_name}</Typography>
         </ListItem>
+        {reason &&
         <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary={"Date"} />
+          <ListItemText primary={'Reason'} />
+          <Typography gutterBottom>{reason?.description}</Typography>
+        </ListItem>}
+        <ListItem sx={{ py: 1, px: 0 }}>
+          <ListItemText primary={'Date'} />
           <Typography gutterBottom>{selectedRecord?.date}</Typography>
         </ListItem>
         <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary={"Time"} />
+          <ListItemText primary={'Time'} />
           <Typography gutterBottom>{selectedRecord?.start}</Typography>
         </ListItem>
       </List>
