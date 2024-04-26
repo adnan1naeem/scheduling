@@ -10,32 +10,33 @@ import StepLabel from '@mui/material/StepLabel';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import moment from "moment";
-import { useSearchParams } from 'next/navigation'
+import moment from 'moment';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/legacy/image';
 import logoImage from '/public/assets/images/contact/image.png';
 
 // project imports
 import AddressForm from './AddressForm';
 import Review from './Review';
-import MainCard from 'components/MainCard';
 import AnimateButton from 'components/@extended/AnimateButton';
 import DenseTable from 'views/appoinments';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import FullScreenLoading from './FullScreenLoading';
-import { width } from '../../../../../node_modules/@mui/system/index';
 // ==============================|| FORMS WIZARD - BASIC ||============================== //
 
 export default function BasicWizard() {
   const [activeStep, setActiveStep] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [bookAppintment, setBookAppintment] = useState(false);
-  const [radioSelected, setRadioSelected] = useState("today");
+  const [radioSelected, setRadioSelected] = useState('today');
   const [value, setValue] = useState([
-    null,
-    null,
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    }
   ]);
   const [loading, setLoading] = React.useState(false);
   const [availableSlot, setAvailableSlot] = React.useState([]);
@@ -50,11 +51,11 @@ export default function BasicWizard() {
   const [patientIdParam, setPatientIdParam] = useState(null);
 
   useEffect(() => {
-    const fullName = searchParams.get('fullName')
-    const patientId = searchParams.get('patientId')
+    const fullName = searchParams.get('fullName');
+    const patientId = searchParams.get('patientId');
     setFullNameParam(fullName);
     setPatientIdParam(patientId);
-  }, [])
+  }, []);
 
   // step options
   const steps = ['Search Schedule', 'Select Available Slot', 'Confirm Appointment'];
@@ -62,27 +63,31 @@ export default function BasicWizard() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <AddressForm
-          setValue={(value) => setValue(value)}
-          value={value}
-          setRadioSelected={(value) => setRadioSelected(value)}
-          radioSelected={radioSelected}
-          clearForm={(next) => clearFormRecord()}
-          startDateFun={(data) => setStartDate(data)}
-          endDateFun={(data) => setEndDate(data)}
-          setLocationListFun={(data) => setLocationList(data)}
-          setProviderListFun={(data) => setProviderList(data)}
-          setSelectedReasonFun={(data) => setReason(data)}
-        />;
+        return (
+          <AddressForm
+            setValue={(value) => setValue(value)}
+            value={value}
+            setRadioSelected={(value) => setRadioSelected(value)}
+            radioSelected={radioSelected}
+            clearForm={(next) => clearFormRecord()}
+            startDateFun={(data) => setStartDate(data)}
+            endDateFun={(data) => setEndDate(data)}
+            setLocationListFun={(data) => setLocationList(data)}
+            setProviderListFun={(data) => setProviderList(data)}
+            setSelectedReasonFun={(data) => setReason(data)}
+          />
+        );
       case 1:
-        return <DenseTable
-          locatonList={locatonList}
-          providerList={providerList}
-          nextAvailableSlotData={nextAvailableSlotData}
-          availableSlotData={availableSlot}
-          selectedRecordFun={(data) => setSelectedRecord(data)}
-          handleNextFun={(next) => handleNext()}
-        />;
+        return (
+          <DenseTable
+            locatonList={locatonList}
+            providerList={providerList}
+            nextAvailableSlotData={nextAvailableSlotData}
+            availableSlotData={availableSlot}
+            selectedRecordFun={(data) => setSelectedRecord(data)}
+            handleNextFun={(next) => handleNext()}
+          />
+        );
       case 2:
         return <Review fullName={fullNameParam} selectedRecord={selectedRecord} />;
       default:
@@ -94,14 +99,14 @@ export default function BasicWizard() {
     setLocationList([]);
     setProviderList([]);
     setReason([]);
-  }
+  };
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
 
   const handleNextAvailableSlot = async () => {
-    setNextAvailableSlotData(true)
+    setNextAvailableSlotData(true);
     handleNext();
   };
 
@@ -109,7 +114,7 @@ export default function BasicWizard() {
     setBookAppintment(true);
     const params = {
       patientId: patientIdParam || 197520,
-      datetime: `${moment(selectedRecord?.date)?.format("MM/DD/YYYY")} ${selectedRecord?.start}`,
+      datetime: `${moment(selectedRecord?.date)?.format('MM/DD/YYYY')} ${selectedRecord?.start}`,
       duration: selectedRecord?.duration,
       location: selectedRecord?.location?.trim(),
       patient_name: fullNameParam || 'Mohsin Naeem',
@@ -125,52 +130,52 @@ export default function BasicWizard() {
   let count = false;
   React.useEffect(() => {
     if (!count) {
-      count = true
+      count = true;
       getAvailableSlot();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (startDate && endDate) {
       getAvailableSlot();
-    }
-    else if (locatonList?.length > 0 || locatonList == null) {
+    } else if (locatonList?.length > 0 || locatonList == null) {
       getAvailableSlot();
-    }
-    else if (providerList?.length > 0 || providerList == null) {
+    } else if (providerList?.length > 0 || providerList == null) {
       getAvailableSlot();
     } else if (reason?.length > 0 || reason == null) {
       getAvailableSlot();
     }
-  }, [startDate, endDate, locatonList, providerList, reason])
+  }, [startDate, endDate, locatonList, providerList, reason]);
 
   const getAvailableSlot = async () => {
     setLoading(true);
     let params = {};
     if (locatonList?.length > 0) {
-      params['location'] = locatonList
+      params['location'] = locatonList;
     }
     if (providerList?.length > 0) {
-      params['provider'] = providerList
-    } if (!startDate) {
-      params['sdate'] = moment(new Date()).format("MM-DD-YYYY")
-      params['edate'] = moment(new Date()).format("MM-DD-YYYY")
+      params['provider'] = providerList;
+    }
+    if (!startDate) {
+      params['sdate'] = moment(new Date()).format('MM-DD-YYYY');
+      params['edate'] = moment(new Date()).format('MM-DD-YYYY');
     } else {
-      params['sdate'] = moment(startDate).format("MM-DD-YYYY")
-      params['edate'] = moment(endDate).format("MM-DD-YYYY")
+      params['sdate'] = moment(startDate).format('MM-DD-YYYY');
+      params['edate'] = moment(endDate).format('MM-DD-YYYY');
     }
     const providerData = await fetchApiData('appointments', 'get', params);
     setAvailableSlot([...providerData?.data]);
     setLoading(false);
-  }
+  };
 
   const bookAppiontmentFun = async (url, method, params) => {
     try {
-      await axios.post("https://eh-axios-server.vercel.app/fetch-data", {
-        url: `https://hero.epicpc.com/api/${url}`,
-        type: method,
-        requestData: params,
-      })
+      await axios
+        .post('https://eh-axios-server.vercel.app/fetch-data', {
+          url: `https://hero.epicpc.com/api/${url}`,
+          type: method,
+          requestData: params
+        })
         .then((res) => {
           setBookAppintment(false);
           if (res?.data?.responseData?.success) {
@@ -180,8 +185,8 @@ export default function BasicWizard() {
           }
         })
         .catch((err) => {
-          console.log(JSON.stringify(err, null, 2), "error");
-          console.log(JSON.stringify(err?.response, null, 2), "error message");
+          console.log(JSON.stringify(err, null, 2), 'error');
+          console.log(JSON.stringify(err?.response, null, 2), 'error message');
           setBookAppintment(false);
         });
     } catch (error) {
@@ -216,31 +221,35 @@ export default function BasicWizard() {
 
   const getAppointmentUpdate = () => {
     let allData = false;
-    if (startDate != null && endDate != null && (locatonList?.length > 0 && locatonList) && (providerList?.length > 0 && providerList) && reason != null) {
-      allData = false
+    if (
+      startDate != null &&
+      endDate != null &&
+      locatonList?.length > 0 &&
+      locatonList &&
+      providerList?.length > 0 &&
+      providerList &&
+      reason != null
+    ) {
+      allData = false;
     }
-    return allData
+    return allData;
   };
 
   return (
     <>
-      <Box sx={{
-        display: 'flex',
-        position: 'absolute',
-        zIndex: 1,
-        left: 0,
-        marginBottom: '3%',
-        "@media screen and (min-width: 30px) and (max-width: 1023px)": {
-          position: 'relative',
-        },
-      }}>
-
-        <Image
-          src={logoImage}
-          width={150}
-          height={80}
-
-        />
+      <Box
+        sx={{
+          display: 'flex',
+          position: 'absolute',
+          zIndex: 1,
+          left: 0,
+          marginBottom: '3%',
+          '@media screen and (min-width: 30px) and (max-width: 1023px)': {
+            position: 'relative'
+          }
+        }}
+      >
+        <Image src={logoImage} width={150} height={80} />
       </Box>
 
       <Box borderRadius={3} sx={{ backgroundColor: 'white', padding: 1 }}>
@@ -248,17 +257,20 @@ export default function BasicWizard() {
         <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
           {steps?.map((label) => (
             <Step key={label}>
-              <StepLabel StepIconProps={{
-                sx: {
-                  "&.Mui-active": {
-                    color: "#292754"
-                  },
-                  "&.Mui-completed": {
-                    color: "#292754"
+              <StepLabel
+                StepIconProps={{
+                  sx: {
+                    '&.Mui-active': {
+                      color: '#292754'
+                    },
+                    '&.Mui-completed': {
+                      color: '#292754'
+                    }
                   }
-                }
-              }}
-              >{label}</StepLabel>
+                }}
+              >
+                {label}
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -269,8 +281,7 @@ export default function BasicWizard() {
                 Thank you for your Appointment.
               </Typography>
               <Typography variant="subtitle1">
-                Your Appointment is confirmed, we will send you an update when your Appointment status has
-                been changed.
+                Your Appointment is confirmed, we will send you an update when your Appointment status has been changed.
               </Typography>
               <Stack direction="row" justifyContent="flex-end">
                 <AnimateButton>
@@ -285,100 +296,125 @@ export default function BasicWizard() {
               {getStepContent(activeStep)}
               <Stack direction="row" justifyContent={activeStep !== 0 ? 'space-between' : 'start'}>
                 {activeStep !== 0 && (
-                  <Button onClick={handleBack} sx={{ my: 3, ml: 1, color: "#292754" }}>
+                  <Button onClick={handleBack} sx={{ my: 3, ml: 1, color: '#292754' }}>
                     Back
                   </Button>
                 )}
-                {activeStep == 0 &&
-                  <Box sx={{display:'flex',width:"100%", justifyContent:'space-between'}}>
-                    <Button onClick={() => window.location.reload()} variant="contained" sx={{
-                      height: 40,
-                      width: 120,
-                      backgroundColor: '#292754', my: "1.5%", mr: 5,
-                      '&:hover': {
-                        backgroundColor: '#292754'
-                      },
-                      '&:active': {
-                        backgroundColor: 'white',
-                        '&::after': {
-                          opacity: 0.1
+                {activeStep == 0 && (
+                  <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+                    <Button
+                      onClick={() => window.location.reload()}
+                      variant="contained"
+                      sx={{
+                        height: 40,
+                        width: 120,
+                        backgroundColor: '#292754',
+                        my: '1.5%',
+                        mr: 5,
+                        '&:hover': {
+                          backgroundColor: '#292754'
+                        },
+                        '&:active': {
+                          backgroundColor: 'white',
+                          '&::after': {
+                            opacity: 0.1
+                          }
                         }
-                      }
-                    }}>
+                      }}
+                    >
                       {'Clear Form'}
                     </Button>
-                    <Box spacing={30}
-                      sx={{ display: 'flex', flexWrap: "wrap", paddingBottom: 1 }}
+                    <Box
+                      spacing={30}
+                      sx={{ display: 'flex', flexWrap: 'wrap', paddingBottom: 1 }}
                       justifyContent={'center'}
-                      alignItems={'center'}>
+                      alignItems={'center'}
+                    >
                       <Grid item sx={{ mt: '3%' }}>
-                        <Button variant="contained" sx={{
-                          backgroundColor: '#2470AC', width: { xs: '100%', lg: '100%' },
-                          '&:hover': {
-                            backgroundColor: '#2470AC'
-                          },
-                          '&:active': {
-                            backgroundColor: 'white',
-                            '&::after': {
-                              opacity: 0.1
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: '#2470AC',
+                            width: { xs: '100%', lg: '100%' },
+                            '&:hover': {
+                              backgroundColor: '#2470AC'
+                            },
+                            '&:active': {
+                              backgroundColor: 'white',
+                              '&::after': {
+                                opacity: 0.1
+                              }
                             }
-                          }
-                        }} onClick={handleNextAvailableSlot}>
+                          }}
+                          onClick={handleNextAvailableSlot}
+                        >
                           Next Available Slot
                         </Button>
                       </Grid>
-                      <Box sx={{
-                        mr: { xs: 1, sm: 5 },
-                      }}></Box>
+                      <Box
+                        sx={{
+                          mr: { xs: 1, sm: 5 }
+                        }}
+                      ></Box>
                       <Grid item sx={{ mt: '3%' }}>
-                        <Button onClick={() => {
-                          setNextAvailableSlotData(false)
-                          handleNext()
-                        }} variant="contained" sx={{
-                          backgroundColor: '#0B8588', width: { xs: '100%', lg: '100%' },
-                          '&:hover': {
-                            backgroundColor: '#0B8588'
-                          },
-                          '&:active': {
-                            backgroundColor: 'white',
-                            '&::after': {
-                              opacity: 0.1
+                        <Button
+                          onClick={() => {
+                            setNextAvailableSlotData(false);
+                            handleNext();
+                          }}
+                          variant="contained"
+                          sx={{
+                            backgroundColor: '#0B8588',
+                            width: { xs: '100%', lg: '100%' },
+                            '&:hover': {
+                              backgroundColor: '#0B8588'
+                            },
+                            '&:active': {
+                              backgroundColor: 'white',
+                              '&::after': {
+                                opacity: 0.1
+                              }
                             }
-                          }
-                        }}>
+                          }}
+                        >
                           <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
                         </Button>
                       </Grid>
                     </Box>
                   </Box>
-
-
-                }
+                )}
                 {activeStep == 1 && null}
-                {activeStep == 2 &&
+                {activeStep == 2 && (
                   <AnimateButton>
-                    <LoadingButton disabled={getAppointmentUpdate()} variant="contained" onClick={handleConfirmAppointment} sx={{
-                      backgroundColor: '#0B8588', my: 3, ml: 1,
-                      '&:hover': {
-                        backgroundColor: '#0B8588'
-                      },
-                      '&:active': {
-                        backgroundColor: 'white',
-                        '&::after': {
-                          opacity: 0.1
+                    <LoadingButton
+                      disabled={getAppointmentUpdate()}
+                      variant="contained"
+                      onClick={handleConfirmAppointment}
+                      sx={{
+                        backgroundColor: '#0B8588',
+                        my: 3,
+                        ml: 1,
+                        '&:hover': {
+                          backgroundColor: '#0B8588'
+                        },
+                        '&:active': {
+                          backgroundColor: 'white',
+                          '&::after': {
+                            opacity: 0.1
+                          }
                         }
-                      }
-                    }} loading={bookAppintment}>
+                      }}
+                      loading={bookAppintment}
+                    >
                       Confirm Appointment
                     </LoadingButton>
                   </AnimateButton>
-                }
+                )}
               </Stack>
             </>
           )}
         </>
       </Box>
     </>
-
   );
 }

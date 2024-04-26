@@ -7,6 +7,7 @@ import RadioGroupForms from 'components/RadioButton';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
 import CustomSelectReason from 'components/InputFieldDropDownReason';
+import moment from 'moment';
 
 const fetchData = async (url, method, params) => {
   let config = {
@@ -83,7 +84,6 @@ export default function AddressForm({
 
   const fetchLocationDataAndSetState = async (item) => {
     if (item?.length > 0) {
-      console.log(JSON.stringify(item, null,2), "itemitemitem");
       const params = { provider: item };
       const locationData = await fetchData('location_provider', 'get', params);
       const locationOptions = locationData?.data
@@ -97,8 +97,6 @@ export default function AddressForm({
       }
       setReason(locationData?.app_typ);
     } else {
-      console.log(JSON.stringify(item, null,2), "elselselsel");
-
       const locationData = await fetchData('getlocation', 'get');
       const locationOptions = locationData?.data
         ?.filter((location) => location?.desc !== 'BLUE SKY')
@@ -106,7 +104,7 @@ export default function AddressForm({
           value: location.abbr,
           label: location.desc
         }));
-        setLocationList(locationOptions);
+      setLocationList(locationOptions);
     }
   };
 
@@ -222,8 +220,8 @@ export default function AddressForm({
 
   useEffect(() => {
     if (startDate && endDate) {
-      startDateFun(startDate.format('MM-DD-YYYY'));
-      endDateFun(endDate.format('MM-DD-YYYY'));
+      startDateFun(moment(startDate)?.format('MM-DD-YYYY'));
+      endDateFun(moment(endDate)?.format('MM-DD-YYYY'));
     }
   }, [startDate, endDate]);
 

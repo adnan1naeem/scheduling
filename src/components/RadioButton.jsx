@@ -3,35 +3,50 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import MainCard from 'components/MainCard';
-import { DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
-import Button from '@mui/material/Button';
 import moment from 'moment';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { DateRange } from 'react-date-range';
+import Button from '@mui/material/Button';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css';
 
 export default function RadioGroupForms({ setValue, value, setRadioSelected, radioSelected, startDate, endDate }) {
   const [selecteDateRange, setSelecteDateRange] = useState(false);
   const today = moment();
+  const [rangeSelected, setRangeSelected] = useState(false);
 
   useEffect(() => {
-    if (value[1]) {
-      startDate(value[0]);
-      endDate(value[1]);
+    if (value[0]?.endDate) {
+      startDate(value[0]?.startDate);
+      endDate(value[0]?.endDate);
     }
   }, [value]);
 
   const handleRadioClick = () => {
+    setRangeSelected(true);
+    setValue([
+      {
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection'
+      }
+    ]);
     setRadioSelected('dateRange');
     setSelecteDateRange(true);
   };
 
   const handleTodayClick = () => {
     setRadioSelected('today');
-    setValue([null, null]);
+    setRangeSelected(false);
+    setValue([
+      {
+        startDate: '',
+        endDate: '',
+        key: 'selection'
+      }
+    ]);
     setSelecteDateRange(false);
     startDate(today);
     endDate(today);
@@ -39,7 +54,14 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
 
   const handleTomorrowClick = () => {
     setRadioSelected('tomorrow');
-    setValue([null, null]);
+    setValue([
+      {
+        startDate: '',
+        endDate: '',
+        key: 'selection'
+      }
+    ]);
+    setRangeSelected(false);
     const tomorrow = today.add(1, 'days');
     setSelecteDateRange(false);
     startDate(tomorrow);
@@ -65,11 +87,11 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     A400: '#41257b',
     A700: '#41257b'
   };
-  
+
   const { palette } = createTheme();
   const theme = createTheme({
     palette: {
-      deepPurple: palette.augmentColor({ color: deepPurple  })
+      deepPurple: palette.augmentColor({ color: deepPurple })
     }
   });
 
@@ -89,11 +111,9 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
               value="dateRange"
               control={<Radio color="deepPurple" />}
               label={
-                value[0] && value[1] ? (
-                  <div>{`Date Range: ${value[0].format('MM-DD-YYYY')} to ${value[1].format('MM-DD-YYYY')}`}</div>
-                ) : (
-                  <div>{`Date Range`}</div>
-                )
+                rangeSelected
+                  ? `Date Range: ${moment(value[0]?.startDate)?.format('MM-DD-YYYY')} to ${moment(value[0]?.endDate)?.format('MM-DD-YYYY')}`
+                  : 'Date Range'
               }
               onClick={handleRadioClick}
               labelPlacement="end"
@@ -104,12 +124,19 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
 
       <Dialog open={selecteDateRange} onClose={handleCloseDateRange}>
         <Box sx={{ p: 2 }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoItem label="Select Range">
-              <DateRangeCalendar value={value} onChange={(newValue) => setValue(newValue)} minDate={today} disablePast />
-            </DemoItem>
-          </LocalizationProvider>
-          <Button disabled={value[0] && value[1] ? false : true} variant="contained" onClick={handleCloseDateRange} sx={{ mt: 2 }}>
+          <DateRange
+            onChange={(item) => setValue([item.selection])}
+            months={2}
+            minDate={moment().toDate()}
+            ranges={value}
+            direction="horizontal"
+          />
+          <Button
+            disabled={value[0]?.startDate && value[0]?.endDate ? false : true}
+            variant="contained"
+            onClick={handleCloseDateRange}
+            sx={{ mt: 2 }}
+          >
             Confirm
           </Button>
         </Box>
@@ -117,3 +144,12 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     </div>
   );
 }
+
+// <LocalizationProvider dateAdapter={AdapterDayjs}>
+// <DemoItem label="Select Range">
+//   <DateRangeCalendar value={value} onChange={(newValue) => setValue(newValue)} minDate={today} disablePast />
+// </DemoItem>
+// </LocalizationProvider>
+// <Button disabled={value[0] && value[1] ? false : true} variant="contained" onClick={handleCloseDateRange} sx={{ mt: 2 }}>
+// Confirm
+// </Button>

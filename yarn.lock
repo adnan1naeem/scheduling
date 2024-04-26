@@ -2081,6 +2081,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "date-fns@npm:3.6.0"
+  checksum: 10c0/0b5fb981590ef2f8e5a3ba6cd6d77faece0ea7f7158948f2eaae7bbb7c80a8f63ae30b01236c2923cf89bb3719c33aeb150c715ea4fe4e86e37dcf06bed42fb6
+  languageName: node
+  linkType: hard
+
 "dayjs@npm:^1.11.10":
   version: 1.11.10
   resolution: "dayjs@npm:1.11.10"
@@ -3753,6 +3760,7 @@ __metadata:
     "@mui/x-date-pickers-pro": "npm:^7.2.0"
     axios: "npm:^1.6.7"
     chance: "npm:^1.1.11"
+    date-fns: "npm:^3.6.0"
     dayjs: "npm:^1.11.10"
     encoding: "npm:^0.1.13"
     eslint: "npm:^8.57.0"
@@ -3774,6 +3782,7 @@ __metadata:
     notistack: "npm:^3.0.1"
     prettier: "npm:^3.2.5"
     react: "npm:^18.2.0"
+    react-date-range: "npm:^2.0.1"
     react-device-detect: "npm:^2.2.3"
     react-dom: "npm:^18.2.0"
     react-intl: "npm:^6.6.2"
@@ -4357,7 +4366,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -4406,6 +4415,21 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 10c0/95fac4642664a49dc334ebafbdea9ec73e12cefadca2247a001d3f54d18ab91bb9381d0035dc55dbfcc67dbbb5de26c420a20c03d650da6065645c54d73b6c83
+  languageName: node
+  linkType: hard
+
+"react-date-range@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "react-date-range@npm:2.0.1"
+  dependencies:
+    classnames: "npm:^2.2.6"
+    prop-types: "npm:^15.7.2"
+    react-list: "npm:^0.8.13"
+    shallow-equal: "npm:^1.2.1"
+  peerDependencies:
+    date-fns: 3.0.6 || >=3.0.0
+    react: ^0.14 || ^15.0.0-rc || >=15.0
+  checksum: 10c0/be419f377b86cd9eafbe1e4fb60ba20b81b173e64dbe6cab8649edbe2a9afbc97f23701ab1e382caf4d82f65aaf4746e89d3df8cbbeb127df9ea4b7a3d11a8ab
   languageName: node
   linkType: hard
 
@@ -4475,6 +4499,17 @@ __metadata:
   version: 18.2.0
   resolution: "react-is@npm:18.2.0"
   checksum: 10c0/6eb5e4b28028c23e2bfcf73371e72cd4162e4ac7ab445ddae2afe24e347a37d6dc22fae6e1748632cd43c6d4f9b8f86dcf26bf9275e1874f436d129952528ae0
+  languageName: node
+  linkType: hard
+
+"react-list@npm:^0.8.13":
+  version: 0.8.17
+  resolution: "react-list@npm:0.8.17"
+  dependencies:
+    prop-types: "npm:15"
+  peerDependencies:
+    react: 0.14 || 15 - 18
+  checksum: 10c0/85b2324b9fb410fcb3c6811578d8de51ec84eb308c320a865664c7f161fa3f70510fcc15ec7786e2725cac981355a937683b37d91a66ccfdffacf92c9e40326c
   languageName: node
   linkType: hard
 
@@ -4778,6 +4813,13 @@ __metadata:
     functions-have-names: "npm:^1.2.3"
     has-property-descriptors: "npm:^1.0.2"
   checksum: 10c0/fce59f90696c450a8523e754abb305e2b8c73586452619c2bad5f7bf38c7b6b4651895c9db895679c5bef9554339cf3ef1c329b66ece3eda7255785fbe299316
+  languageName: node
+  linkType: hard
+
+"shallow-equal@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "shallow-equal@npm:1.2.1"
+  checksum: 10c0/51e03abadd97c9ebe590547d92db9148446962a3f23a3a0fb1ba2fccab80af881eef0ff1f8ccefd3f066c0bc5a4c8ca53706194813b95c8835fa66448a843a26
   languageName: node
   linkType: hard
 
