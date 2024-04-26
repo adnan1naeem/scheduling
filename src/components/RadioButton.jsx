@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -82,11 +82,18 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     700: '#41257b',
     800: '#41257b',
     900: '#41257b',
+
     A100: '#41257b',
     A200: '#41257b',
     A400: '#41257b',
     A700: '#41257b'
   };
+
+  const customRangeColors = [
+    {
+      primary: 'red'
+    }
+  ];
 
   const { palette } = createTheme();
   const theme = createTheme({
@@ -94,6 +101,10 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
       deepPurple: palette.augmentColor({ color: deepPurple })
     }
   });
+
+  const handleBackdropClick = (event) => {
+    event.stopPropagation();
+  };
 
   return (
     <div>
@@ -122,20 +133,28 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
         </RadioGroup>
       </MainCard>
 
-      <Dialog open={selecteDateRange} onClose={handleCloseDateRange}>
-        <Box sx={{ p: 2 }}>
+      <Dialog open={selecteDateRange} onClose={handleCloseDateRange} onClick={handleBackdropClick}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', padding: 2 }}>
           <DateRange
             onChange={(item) => setValue([item.selection])}
             months={2}
             minDate={moment().toDate()}
             ranges={value}
             direction="horizontal"
-          />
+            rangeColors={['#0B8588', '#0B8588', '#0B8588']}
+            />
           <Button
-            disabled={value[0]?.startDate && value[0]?.endDate ? false : true}
+            disabled={!value[0]?.startDate || !value[0]?.endDate}
             variant="contained"
             onClick={handleCloseDateRange}
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              backgroundColor: '#0B8588',
+              width: 100,
+              '&:hover': {
+                backgroundColor: '#0B8588'
+              }
+            }}
           >
             Confirm
           </Button>
@@ -144,12 +163,3 @@ export default function RadioGroupForms({ setValue, value, setRadioSelected, rad
     </div>
   );
 }
-
-// <LocalizationProvider dateAdapter={AdapterDayjs}>
-// <DemoItem label="Select Range">
-//   <DateRangeCalendar value={value} onChange={(newValue) => setValue(newValue)} minDate={today} disablePast />
-// </DemoItem>
-// </LocalizationProvider>
-// <Button disabled={value[0] && value[1] ? false : true} variant="contained" onClick={handleCloseDateRange} sx={{ mt: 2 }}>
-// Confirm
-// </Button>

@@ -136,7 +136,7 @@ export default function BasicWizard() {
   }, []);
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && startDate != endDate) {
       getAvailableSlot();
     } else if (locatonList?.length > 0 || locatonList == null) {
       getAvailableSlot();
@@ -348,7 +348,7 @@ export default function BasicWizard() {
                           }}
                           onClick={handleNextAvailableSlot}
                         >
-                          Next Available Slot
+                          Next Available Slots
                         </Button>
                       </Grid>
                       <Box
@@ -377,7 +377,7 @@ export default function BasicWizard() {
                             }
                           }}
                         >
-                          <span style={{ marginRight: '8px' }}>Available Slot</span>({availableSlot?.length})
+                          <span style={{ marginRight: '8px' }}>Available Slots</span>({availableSlot?.length})
                         </Button>
                       </Grid>
                     </Box>

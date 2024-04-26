@@ -219,7 +219,7 @@ export default function AddressForm({
   };
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (startDate && endDate && startDate != endDate) {
       startDateFun(moment(startDate)?.format('MM-DD-YYYY'));
       endDateFun(moment(endDate)?.format('MM-DD-YYYY'));
     }
