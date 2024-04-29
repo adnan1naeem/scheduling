@@ -11,16 +11,9 @@ import { DateRange } from 'react-date-range';
 import Button from '@mui/material/Button';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
+import './style.scss';
 
-export default function RadioGroupForms({
-  RangeStartDate,
-  RangeEndDate,
-  setValue,
-  value,
-  setRadioSelected,
-  radioSelected,
-  startDate
-}) {
+export default function RadioGroupForms({ RangeStartDate, RangeEndDate, setValue, value, setRadioSelected, radioSelected, startDate }) {
   const [selecteDateRange, setSelecteDateRange] = useState(false);
   const today = moment();
 
@@ -102,7 +95,6 @@ export default function RadioGroupForms({
     event.stopPropagation();
   };
 
-
   return (
     <div>
       <MainCard title="Date">
@@ -119,7 +111,7 @@ export default function RadioGroupForms({
               value="dateRange"
               control={<Radio color="deepPurple" />}
               label={
-                radioSelected === "dateRange"
+                radioSelected === 'dateRange'
                   ? `Date Range: ${moment(value[0]?.startDate)?.format('MM-DD-YYYY')} to ${moment(value[0]?.endDate)?.format('MM-DD-YYYY')}`
                   : 'Date Range'
               }
