@@ -279,12 +279,30 @@ export default function BasicWizard() {
         <>
           {activeStep === steps.length ? (
             <>
-              <Typography variant="h5" gutterBottom>
-                Thank you for your Appointment.
-              </Typography>
-              <Typography variant="subtitle1">
-                Your Appointment is confirmed, we will send you an update when your Appointment status has been changed.
-              </Typography>
+            
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="h5" gutterBottom>
+                  Appointment scheduled successfully!
+                </Typography>
+
+                <Typography>
+                  {'Your Appointment with '}
+                  <Typography component="span" fontWeight="bold">
+                    {selectedRecord?.provider_name}
+                  </Typography>
+                  {` is scheduled on `}
+                  <Typography component="span" fontWeight="bold">
+                    {moment(selectedRecord?.date)?.format('MM/DD/YYYY')}
+                  </Typography>
+                  {` at `}
+                  <Typography component="span" fontWeight="bold">
+                    {selectedRecord?.start}
+                  </Typography>
+                  <br />
+                  Thank you for the Appointment
+                </Typography>
+              </Box>
+
               <Stack direction="row" justifyContent="flex-end">
                 <AnimateButton>
                   <Button variant="contained" color="error" onClick={() => setActiveStep(0)} sx={{ my: 3, ml: 1 }}>

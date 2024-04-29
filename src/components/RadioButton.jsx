@@ -5,10 +5,12 @@ import RadioGroup from '@mui/material/RadioGroup';
 import MainCard from 'components/MainCard';
 import moment from 'moment';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DateRange } from 'react-date-range';
 import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
 import './style.scss';
@@ -66,6 +68,7 @@ export default function RadioGroupForms({ RangeStartDate, RangeEndDate, setValue
   const handleCloseDateRange = () => {
     setSelecteDateRange(false);
   };
+
   const deepPurple = {
     50: '#41257b',
     100: '#41257b',
@@ -124,6 +127,10 @@ export default function RadioGroupForms({ RangeStartDate, RangeEndDate, setValue
 
       <Dialog open={selecteDateRange} onClose={handleCloseDateRange} onClick={handleBackdropClick}>
         <Box sx={{ display: 'flex', flexDirection: 'column', padding: 2 }}>
+          <IconButton disabled={value[0]?.startDate === value[0]?.endDate} aria-label="close" onClick={handleCloseDateRange} sx={{ position: 'absolute', top: 1, right: 8, color: 'grey' }}>
+            <CloseIcon />
+          </IconButton>
+          <Box sx={{marginTop:3}}/>
           <DateRange
             onChange={(item) => setValue([item.selection])}
             months={2}
@@ -132,8 +139,9 @@ export default function RadioGroupForms({ RangeStartDate, RangeEndDate, setValue
             direction="horizontal"
             rangeColors={['#41257b', 'transparent', '#41257b']}
           />
+          {/* Confirm Button */}
           <Button
-            disabled={value[0]?.startDate == value[0]?.endDate}
+            disabled={value[0]?.startDate === value[0]?.endDate}
             variant="contained"
             onClick={handleCloseDateRange}
             sx={{
