@@ -23,7 +23,7 @@ const CustomSelectReason = ({ name, options, title, onChange }) => {
         <Select
           labelId={`select-${name}-label`}
           id={`select-${name}`}
-          value={options?.find((option) => option?.value === selectedValue)?.label ? selectedValue : ""}
+          value={options?.find((option) => option?.value === selectedValue)?.label ? selectedValue : ''}
           onChange={handleChange}
           renderValue={(selected) => (
             <>
@@ -35,6 +35,9 @@ const CustomSelectReason = ({ name, options, title, onChange }) => {
             </>
           )}
         >
+          <MenuItem value="">
+            <em>Any</em>
+          </MenuItem>
           {options?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}

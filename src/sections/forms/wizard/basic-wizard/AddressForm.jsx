@@ -78,7 +78,7 @@ export default function AddressForm({
   const [Reason, setReason] = useState();
   const [SelectedReason, setSelectedReason] = useState();
 
-  const fetchLocationDataAndSetState = async (item) => {
+  const fetchLocationDataAndSetState = async (item, selectedOption = null) => {
     if (item?.length > 0) {
       const params = { provider: item };
       const locationData = await fetchData('location_provider', 'get', params);
@@ -88,8 +88,8 @@ export default function AddressForm({
           value: location.abbr,
           label: location.desc
         }));
-      if (selectedLocation.length <= 0) {
-        setLocationList(locationOptions);
+      if (selectedOption?.length <= 0) {
+        setLocationList([...locationOptions]);
       }
       setReason(locationData?.app_typ);
     } else {
@@ -104,58 +104,20 @@ export default function AddressForm({
     }
   };
 
-  const reasons = reasonMap?.map((reason) => ({
-    value: reason?.abbreviation,
-    label: reason?.description,
-    type_id: reason?.appointment_type_id
-  }));
-  const ReasonData = Reason?.map((reason) => ({
-    value: reason?.abbreviation,
-    label: reason?.description,
-    type_id: reason?.appointment_type_id
-  }));
-  const options = ReasonData?.length > 0 ? ReasonData : reasons;
-
-  const handleLocationChange = (selectedOption) => {
-    setSelectedLocation(selectedOption);
-  };
-
-  useEffect(() => {
-    if (selectedLocation?.length > 0) {
-      fetchProvidersForLocation();
-      setLocationListFun(selectedLocation);
-    } else {
-      setLocationListFun(null);
-      fetchProvidersForLocation();
-      fetchLocationDataAndSetState(selectedProvider);
-    }
-  }, [selectedLocation]);
-
-  useEffect(() => {
-    if (selectedProvider?.length >= 0) {
-      fetchLocationDataAndSetState(selectedProvider);
-      setProviderListFun(selectedProvider);
-    } else {
-      setProviderListFun(null);
-    }
-  }, [selectedProvider]);
-
-  useEffect(() => {
-    if (selectedProvider?.length <= 0) {
-      fetchProvidersForLocation();
-    }
-  }, [selectedLocation]);
-
-  const fetchProvidersForLocation = async () => {
-    if (selectedLocation.length > 0) {
+  const fetchProvidersForLocation = async (item, selectedOption = null) => {
+    if (item?.length > 0) {
       try {
-        let params = { location: selectedLocation };
+        let params = { location: item };
         const providerData = await fetchData('provider_location', 'get', params);
         const ProviderOptions = providerData?.data?.map((provider) => ({
           value: provider?.provider,
           label: provider?.first_name || provider?.last_name ? `${provider?.first_name} ${provider?.last_name}` : provider?.full_name
         }));
-        setProviderList(ProviderOptions);
+        if (selectedOption?.length <= 0) {
+          setProviderList(ProviderOptions);
+        }else{
+          setProviderList(ProviderOptions);
+        }
         setReason(providerData?.app_typ);
       } catch (error) {
         console.error('Error fetching provider data:', error);
@@ -175,19 +137,75 @@ export default function AddressForm({
     }
   };
 
+  const reasons = reasonMap?.map((reason) => ({
+    value: reason?.abbreviation,
+    label: reason?.description,
+    type_id: reason?.appointment_type_id
+  }));
+  const ReasonData = Reason?.map((reason) => ({
+    value: reason?.abbreviation,
+    label: reason?.description,
+    type_id: reason?.appointment_type_id
+  }));
+  const options = ReasonData?.length > 0 ? ReasonData : reasons;
+
+  useEffect(() => {
+    if (selectedLocation?.length > 0) {
+      setLocationListFun(selectedLocation);
+    } else {
+      setLocationListFun(null);
+    }
+  }, [selectedLocation]);
+
+  useEffect(() => {
+    if (selectedProvider?.length >= 0) {
+      setProviderListFun(selectedProvider);
+    } else {
+      setProviderListFun(null);
+    }
+  }, [selectedProvider]);
+
+  let count = false;
+  useEffect(() => {
+    if(!count){
+      count = true;
+      fetchLocationDataAndSetState([]);
+      fetchProvidersForLocation([]);
+    }
+  }, []);
+
   useEffect(() => {
     if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
       setReason(null);
     }
   }, [selectedLocation, selectedProvider, SelectedReason]);
 
+  const handleLocationChange = (selectedOption) => {
+    if(selectedLocation?.length > 0 || selectedProvider?.length <= 0){
+      fetchProvidersForLocation(selectedOption);
+    }
+    setSelectedLocation(selectedOption);
+    if(selectedOption?.length <= 0){
+      fetchLocationDataAndSetState(selectedProvider, selectedOption);
+    }
+  };
+
   const handleProviderChange = (selectedOption) => {
     setSelectedProvider(selectedOption);
+    fetchLocationDataAndSetState(selectedOption, selectedLocation);
+    if(selectedOption?.length <= 0){
+      fetchProvidersForLocation(selectedOption);
+    }
   };
 
   const handleReasonChange = async (selectedOption) => {
     const SelectedValue = reasonMap.find((option) => option.abbreviation === selectedOption);
     setSelectedReasonFun(SelectedValue);
+    if (selectedOption == '') {
+      fetchProvidersForLocation(selectedLocation);
+      fetchLocationDataAndSetState(selectedProvider);
+      return;
+    }
     try {
       if (selectedLocation?.length <= 0 && selectedProvider?.length <= 0) {
         await fetchData('get_prov_loc_from_visit', 'get', { visit_type: SelectedValue?.appointment_type_id })
@@ -223,6 +241,7 @@ export default function AddressForm({
 
   useEffect(() => {
     setReasonMap(reasonStaticData);
+    setSelectedReasonFun("");
   }, []);
 
   return (

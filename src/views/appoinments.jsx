@@ -19,7 +19,6 @@ export default function DenseTable({
 }) {
   const [loading, setLoading] = React.useState(false);
   const [availableSlot, setAvailableSlot] = React.useState([...availableSlotData]);
-
   const [data, setData] = useState([...availableSlotData]);
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
