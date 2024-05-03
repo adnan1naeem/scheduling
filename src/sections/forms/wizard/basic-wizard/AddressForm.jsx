@@ -28,31 +28,62 @@ const fetchData = async (url, method, params) => {
     throw error;
   }
 };
+
 let reasonStaticData = [
   {
-    appointment_type_id: '155',
-    abbreviation: 'ACT PHY',
-    description: 'Physical'
+    "appointment_type_id": "182",
+    "abbreviation": "2NPOVAWV",
+    "description": "New Patient Annual Wellness Visit (Medicare only)"
   },
   {
-    appointment_type_id: '234',
-    abbreviation: 'ACT OV',
-    description: 'ILL/Sick/Acute Visit'
+    "appointment_type_id": "207",
+    "abbreviation": "PNPVOV  ",
+    "description": "First Time Behavioral Health Patient (video visit)"
   },
   {
-    appointment_type_id: '268',
-    abbreviation: 'ACTNPOV',
-    description: 'Routine/Regular Office Visit'
+    "appointment_type_id": "220",
+    "abbreviation": "2OVCWE  ",
+    "description": "Yearly Physical/ Sports Physical"
   },
   {
-    appointment_type_id: '280',
-    abbreviation: 'ACTWIAWV',
-    description: 'Virtual Office Visit'
+    "appointment_type_id": "228",
+    "abbreviation": "2NPOVCWE",
+    "description": "New Patient Comprehensive Wellness Exam"
   },
   {
-    appointment_type_id: '285',
-    abbreviation: 'ACTPHGYN',
-    description: "Women's Health/Pap Smear/GYN Exam"
+    "appointment_type_id": "234",
+    "abbreviation": "ACT OV  ",
+    "description": "Routine Follow Up and/or Sick Visit"
+  },
+  {
+    "appointment_type_id": "244",
+    "abbreviation": "PSY-VOV ",
+    "description": "Follow Up (video visit)"
+  },
+  {
+    "appointment_type_id": "262",
+    "abbreviation": "PSY - FU",
+    "description": "Follow Up"
+  },
+  {
+    "appointment_type_id": "273",
+    "abbreviation": "PSY - NP",
+    "description": "First Time Behavioral Health Patient"
+  },
+  {
+    "appointment_type_id": "301",
+    "abbreviation": "ACTTOC  ",
+    "description": "Transition of Care Visit"
+  },
+  {
+    "appointment_type_id": "304",
+    "abbreviation": "2OVAWV  ",
+    "description": "Annual Wellness Visit (Medicare Only)"
+  },
+  {
+    "appointment_type_id": "311",
+    "abbreviation": "ACTERFU ",
+    "description": "ER Follow Up"
   }
 ];
 

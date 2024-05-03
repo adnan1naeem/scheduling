@@ -136,11 +136,11 @@ export default function BasicWizard() {
     if (rangeStartDate && rangeEndDate && rangeStartDate != rangeEndDate) {
       getAvailableSlot(radioSelected);
     } else if (locatonList?.length > 0 || locatonList == null) {
-      getAvailableSlot();
+      getAvailableSlot(radioSelected);
     } else if (providerList?.length > 0 || providerList == null) {
-      getAvailableSlot();
+      getAvailableSlot(radioSelected);
     } else if (reason?.abbreviation?.length > 0) {
-      getAvailableSlot();
+      getAvailableSlot(radioSelected);
     }
   }, [rangeStartDate, rangeEndDate, locatonList, providerList, reason]);
 
