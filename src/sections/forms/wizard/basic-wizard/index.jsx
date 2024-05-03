@@ -124,7 +124,7 @@ export default function BasicWizard() {
       duration: selectedRecord?.duration,
       location: selectedRecord?.location?.trim(),
       patient_name: fullNameParam || 'Mohsin Naeem',
-      practitioner: selectedRecord?.provider?.trim(),
+      practitioner: selectedRecord?.resource_abbr?.trim(),
       reason_for_visit: !reason?.abbreviation ? 'ACT OV' : reason?.abbreviation?.trim(),
       visitType: !reason?.abbreviation ? 'ACT OV' : reason?.abbreviation,
       self_schedule: 1
